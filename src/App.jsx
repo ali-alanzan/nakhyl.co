@@ -5,6 +5,8 @@ import Gathering from './pages/Gathering';
 import Journal from './pages/Journal';
 import Connect from './pages/Connect';
 import Menu from './pages/Menu';
+import Compliance from './pages/Compliance';
+
 import './App.css';
 import Header from './Header';
 import Footer from './Footer';
@@ -25,6 +27,8 @@ function App() {
           <Route path="/gathering" element={<Gathering />} />
           <Route path="/journal" element={<Journal />} />
           <Route path="/connect" element={<Connect />} />
+          <Route path="/compliance" element={<Compliance />} />
+          
         </Routes>
       </main>
         <Footer />

@@ -18,7 +18,7 @@ export default function Header({ isNight, setIsNight, onOpenCampfire }) {
     { name: 'kitchen', path: '/menu' },
     { name: 'gatherings', path: '/gathering' },
     { name: 'journal', path: '/journal' },
-    { name: 'connect', path: '/connect' }
+    { name: 'connect', path: '/connect' },
   ];
 
   return (

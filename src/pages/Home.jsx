@@ -1,276 +1,445 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ArrowRight,
+  CalendarDays,
+  Flame,
+  Headphones,
+  MapPin,
+  Moon,
+  Pause,
+  Play,
+  ShieldCheck,
+  Sparkles,
+  Sun,
+  Users,
+  Wifi,
+  X,
+} from 'lucide-react';
 
+const heroImage = new URL('../../identity/Nakhyl-zone-2.jpeg', import.meta.url).href;
+const groveImage = new URL('../../identity/Nakhyl-zone-9.jpeg', import.meta.url).href;
+const loungeImage = new URL('../../identity/Nakhyl-zone-1.jpeg', import.meta.url).href;
+const fireImage = new URL('../../identity/Nakhyl-zone-5.jpeg', import.meta.url).href;
+const seaImage = new URL('../../identity/Nakhyl-zone-16.jpeg', import.meta.url).href;
+const entranceImage = new URL('../../identity/Nakhyl-zone-12.jpeg', import.meta.url).href;
+const brandBoardImage = new URL('../../identity/Nakhyl-zone-20.jpeg', import.meta.url).href;
 
+const SOCIAL_IMAGES = [
+  new URL('../../identity/Nakhyl-zone-3.jpeg', import.meta.url).href,
+  new URL('../../identity/Nakhyl-zone-4.jpeg', import.meta.url).href,
+  new URL('../../identity/Nakhyl-zone-7.jpeg', import.meta.url).href,
+  new URL('../../identity/Nakhyl-zone-10.jpeg', import.meta.url).href,
+];
 
-export default function NakhylAmbientLanding() {
-  // --- STATE MANAGEMENT ---
-  // Theme State: 'day' (☀️ Chase the Sun) or 'night' (🌙 Follow the Sparks)
+const EXPERIENCE_CARDS = [
+  {
+    title: 'palm-grove work sessions',
+    kicker: 'day rhythm',
+    body: 'Quiet shaded tables, power-ready corners, low seating, and enough room to move from focused work into slow conversation.',
+    image: groveImage,
+  },
+  {
+    title: 'floor-level hospitality',
+    kicker: 'bedouin ritual',
+    body: 'Handwoven rugs, generous cushions, ember-brewed Habak tea, and a hosting style that feels personal rather than transactional.',
+    image: loungeImage,
+  },
+  {
+    title: 'campfire acoustic circles',
+    kicker: 'night rhythm',
+    body: 'Unamplified music, candle-level light, and intimate gathering formats that keep the courtyard calm after sunset.',
+    image: fireImage,
+  },
+];
+
+const JOURNEY = [
+  {
+    icon: MapPin,
+    title: 'arrive from the city grid',
+    text: 'A visible, easy-to-reach entrance that quickly shifts guests away from Dahab street noise.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'choose the right pocket',
+    text: 'Work tables, low seating, cinema corners, and fire circles are separated so each visit has a natural flow.',
+  },
+  {
+    icon: CalendarDays,
+    title: 'reserve the next ritual',
+    text: 'Guests can move from discovery into a WhatsApp handoff for cinema nights, acoustic sessions, or private gatherings.',
+  },
+];
+
+const RITUALS = [
+  ['mon / wed', 'Cinema Wadi', 'Independent films projected in the courtyard with reserved cushions and a soft arrival window.'],
+  ['daily', 'quiet work hours', 'Palm shade, cold drinks, stable tables, and a low-stimulation layout for nomads and makers.'],
+  ['thu', 'acoustic fire circle', 'Oud lines, hand percussion, shared tea, and no raised stage between guests and musicians.'],
+  ['sunrise', 'Habak tea reset', 'A grounded morning service built around mountain herbs, open air, and a slower first hour.'],
+];
+
+const cx = (...classes) => classes.filter(Boolean).join(' ');
+
+export default function Home() {
   const [isNight, setIsNight] = useState(false);
-  // Audio State for Ambient Soundscape Footer Controller
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  // Virtual Campfire Overlay Popup State
-  const [showCampfireModal, setShowCampfireModal] = useState(false);
-
-  // Synchronized Dahab Time & Simple Weather Vector Simulation
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isCampfireOpen, setIsCampfireOpen] = useState(false);
   const [dahabTime, setDahabTime] = useState('');
+
   useEffect(() => {
-    const updateTime = () => {
-      // Offset to Egypt Time (GMT+2 / GMT+3 depending on exact rules, simulated clearly)
-      const options = { timeZone: 'Africa/Cairo', hour: '2xl', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-      setDahabTime(new Date().toLocaleTimeString('en-US', options));
+    const updateClock = () => {
+      setDahabTime(
+        new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Africa/Cairo',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }).format(new Date()),
+      );
     };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+
+    updateClock();
+    const interval = window.setInterval(updateClock, 30000);
+    return () => window.clearInterval(interval);
   }, []);
 
-  // Structural Tokens based on State Engine
-  const themeBg = isNight ? 'bg-[#0A1118] transition-colors duration-1000' : 'bg-[#F4EBE1] transition-colors duration-1000';
-  const themeText = isNight ? 'text-[#F4EBE1]' : 'text-[#2D4A3E]';
-  const themeBorder = isNight ? 'border-[rgba(244,235,225,0.15)]' : 'border-[rgba(45,74,62,0.15)]';
-  const accentColor = isNight ? 'text-[#D97706]' : 'text-[#2D4A3E]';
+  const palette = useMemo(
+    () => ({
+      page: isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]',
+      panel: isNight ? 'bg-[#111B24]/88 border-[#F4EBE1]/12' : 'bg-white/45 border-[#2D4A3E]/15',
+      panelSolid: isNight ? 'bg-[#101922] border-[#F4EBE1]/12' : 'bg-[#EEE3D7] border-[#2D4A3E]/14',
+      muted: isNight ? 'text-[#F4EBE1]/70' : 'text-[#2D4A3E]/70',
+      hairline: isNight ? 'border-[#F4EBE1]/12' : 'border-[#2D4A3E]/12',
+      heroOverlay: isNight
+        ? 'bg-[linear-gradient(90deg,rgba(10,17,24,0.96)_0%,rgba(10,17,24,0.76)_46%,rgba(10,17,24,0.18)_100%)]'
+        : 'bg-[linear-gradient(90deg,rgba(244,235,225,0.98)_0%,rgba(244,235,225,0.78)_47%,rgba(244,235,225,0.12)_100%)]',
+    }),
+    [isNight],
+  );
+
+  const handleReservation = () => {
+    const message = encodeURIComponent(
+      [
+        'Marhaba Nakhyl Zone.',
+        'I would like to plan a visit to the cultural oasis.',
+        'Please share availability for work sessions, Cinema Wadi, or the acoustic fire circle.',
+      ].join('\n'),
+    );
+
+    window.open(`https://api.whatsapp.com/send?phone=201000000000&text=${message}`, '_blank', 'noopener,noreferrer');
+  };
 
   return (
-    <div className={`min-h-screen ${themeBg} ${themeText} font-sans antialiased overflow-x-hidden relative selection:bg-[#D97706] selection:text-white`}>
-      
-      {/* GLOBAL BACKGROUND NOISE OVERLAY FOR TACTILE STONE EFFECT */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.03] bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80')] mix-blend-overlay z-50"></div>
+    <main className={cx('min-h-screen overflow-hidden font-sans antialiased transition-colors duration-700', palette.page)}>
+      <section className="relative min-h-[calc(100vh-6rem)] overflow-hidden border-b border-current/10">
+        <img
+          src={heroImage}
+          alt="Nakhyl Zone palm courtyard with shaded seating in Dahab"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="eager"
+        />
+        <div className={cx('absolute inset-0', palette.heroOverlay)} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(217,119,6,0.18),transparent_32%)]" />
 
-      {/* --- SECTION 1: THE "SLOW-DOWN" HERO SPLIT --- */}
-     
+        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-6rem)] max-w-7xl grid-cols-1 gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.55fr)] lg:px-10">
+          <div className="flex max-w-3xl flex-col justify-center py-16 lg:py-24">
+            <div className="mb-8 flex flex-wrap items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em]">
+              <span className="rounded-full border border-current/15 bg-current/[0.04] px-4 py-2 backdrop-blur-md">
+                Dahab cultural oasis
+              </span>
+              <span className={cx('inline-flex items-center gap-2', palette.muted)}>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#D97706]" />
+                captured from real venue imagery
+              </span>
+            </div>
 
+            <h1 className="max-w-3xl font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal sm:text-6xl lg:text-7xl">
+              a quiet palm sanctuary tucked inside dahab.
+            </h1>
+            <p className={cx('mt-7 max-w-2xl text-base leading-8 tracking-wide sm:text-lg', palette.muted)}>
+              Nakhyl Zone blends Sinai hospitality, low floor seating, acoustic nights, open-air cinema, and nomad-ready work pockets into one grounded courtyard experience.
+            </p>
 
-      {/* --- SECTION 2: THE SOUND OF WELCOMING --- */}
-      <section className={`w-full border-b ${themeBorder} py-4 px-6 flex flex-col sm:flex-row justify-between items-center gap-4`}>
-        <div className="flex items-center space-x-4">
-          <button 
-            onClick={() => setIsPlayingAudio(!isPlayingAudio)}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-transform active:scale-95 border ${themeBorder}`}
-          >
-            {isPlayingAudio ? (
-              <span className="font-mono text-xs">⏸</span>
-            ) : (
-              <span className={`font-mono text-xs ${isNight ? 'text-[#D97706]' : 'text-[#2D4A3E]'}`}>▶</span>
-            )}
-          </button>
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest font-semibold">listen to the oasis right now</p>
-            <p className="text-xs opacity-60 tracking-normal font-sans">Palms rustling, distant acoustic strings, campfire crackle loop</p>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={handleReservation}
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[1.4rem_0.8rem_1.8rem_1rem] bg-[#D97706] px-6 text-xs font-bold uppercase tracking-widest text-[#0A1118] shadow-[0_18px_48px_rgba(217,119,6,0.28)] transition hover:-translate-y-0.5 hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2 focus:ring-offset-transparent"
+              >
+                reserve by whatsapp
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+              <a
+                href="#experience"
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-current/15 bg-current/[0.04] px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-current/[0.09] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+              >
+                explore the courtyard
+              </a>
+            </div>
           </div>
-        </div>
 
-        {/* Audio Waveform Micro-Animation */}
-        <div className="flex items-end space-x-1 h-6 px-4">
-          {[4, 8, 3, 7, 9, 4, 8, 2, 6, 9, 5, 7, 3, 8].map((val, idx) => (
-            <div 
-              key={idx} 
-              className={`w-[2px] transition-all duration-300 ${isNight ? 'bg-[#D97706]' : 'bg-[#2D4A3E]'}`}
-              style={{ 
-                height: isPlayingAudio ? `${val * 2.5}px` : '3px',
-                animation: isPlayingAudio ? `pulse 1.2s ease-in-out infinite alternate` : 'none',
-                animationDelay: `${idx * 0.1}s`
-              }}
-            ></div>
-          ))}
+          <aside className="flex items-end lg:items-center">
+            <div className={cx('w-full rounded-[2.6rem_1.2rem_3.4rem_1.6rem] border p-4 shadow-2xl backdrop-blur-xl', palette.panel)}>
+              <div className="overflow-hidden rounded-[2rem_0.9rem_2.8rem_1.2rem]">
+                <img
+                  src={entranceImage}
+                  alt="Nakhyl Zone entrance with warm stone and yellow-framed windows"
+                  className="h-72 w-full object-cover sm:h-96 lg:h-[28rem]"
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-3 pt-4">
+                {[
+                  ['28.5109 N', 'maps point'],
+                  [dahabTime || '00:00', 'dahab time'],
+                  ['Mar 2026', 'visual set'],
+                ].map(([value, label]) => (
+                  <div key={label} className="rounded-[1rem_0.6rem_1.2rem_0.7rem] border border-current/10 bg-current/[0.035] p-3">
+                    <div className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#D97706]">{value}</div>
+                    <div className={cx('mt-1 text-[10px] uppercase tracking-[0.2em]', palette.muted)}>{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
 
-
-      {/* --- SECTION 3: THE ASYMMETRICAL BENTO MATRIX --- */}
-      <section id="explore" className="py-20 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          
-          {/* Panel 1: Physical Oasis */}
-          <div className={`md:col-span-7 p-8 rounded-[2.5rem_1.2rem_4rem_2rem] border ${themeBorder} shadow-sm flex flex-col justify-between min-h-[380px] group overflow-hidden relative`}>
-            <div className="absolute inset-0 -z-10 opacity-10 group-hover:scale-105 transition-transform duration-700 bg-[url('https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center"></div>
+      <section className={cx('border-b px-5 py-4 sm:px-8 lg:px-10', palette.hairline)}>
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => setIsAudioPlaying((value) => !value)}
+              className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-current/15 bg-current/[0.04] transition hover:bg-current/[0.09] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+              aria-label={isAudioPlaying ? 'Pause oasis soundscape preview' : 'Play oasis soundscape preview'}
+            >
+              {isAudioPlaying ? <Pause className="h-4 w-4" aria-hidden="true" /> : <Play className="h-4 w-4" aria-hidden="true" />}
+            </button>
             <div>
-              <span className="font-mono text-[10px] uppercase tracking-widest opacity-60 block mb-2">[ courtyard 01 ]</span>
-              <h3 className="font-serif text-3xl lowercase mb-4">the raw, living palm groves</h3>
-            </div>
-            <p className="font-sans text-sm tracking-wide opacity-80 max-w-md leading-relaxed">
-              Ditched the tiled modern restaurant grids. Our floor is pure raw crushed sand adorned with handwoven organic Bedouin rugs that contour natively around ancient trees.
-            </p>
-          </div>
-
-          {/* Panel 2: Aroma of Ember-Brewed Tea */}
-          <div className={`md:col-span-5 p-8 rounded-[1.5rem_3rem_1.8rem_2.5rem] border ${themeBorder} shadow-sm flex flex-col justify-between min-h-[380px] relative overflow-hidden group`}>
-            <div className="absolute inset-0 -z-10 opacity-20 group-hover:scale-110 transition-transform duration-700 bg-[url('https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80')] bg-cover bg-center mix-blend-luminosity"></div>
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-widest opacity-60 block mb-2">[ ritual ]</span>
-              <h3 className="font-serif text-3xl lowercase mb-4">ember-brewed habak infusion</h3>
-            </div>
-            <p className="font-sans text-sm tracking-wide opacity-80 leading-relaxed">
-              Slowly boiled over real sagebrush charcoal. A delicate, intoxicating herbal sweet profile cultivated natively right within the high rocks of Saint Catherine mountain ranges.
-            </p>
-          </div>
-
-          {/* Panel 3: Sound Preview Interactive Block */}
-          <div className={`md:col-span-12 p-8 rounded-[3.5rem_2rem_2.5rem_4rem] border ${themeBorder} bg-opacity-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-6`}>
-            <div className="max-w-xl">
-              <span className="font-mono text-[10px] uppercase tracking-widest opacity-60 block mb-2">[ open air acoustic ]</span>
-              <h3 className="font-serif text-2xl lowercase mb-2">the slow rhythm network</h3>
-              <p className="font-sans text-sm tracking-wide opacity-70 leading-relaxed">
-                We ban amplified electronic soundscapes. Local travelers and nomad artists play acoustic instruments directly at sand floor level, forming raw live circles under the stars.
+              <p className="text-xs font-bold uppercase tracking-[0.24em]">listen to the oasis right now</p>
+              <p className={cx('mt-1 text-sm leading-6', palette.muted)}>
+                A tactile preview module for palm wind, embers, and faint acoustic strings.
               </p>
             </div>
-            <button 
-              onClick={() => setIsPlayingAudio(!isPlayingAudio)} 
-              className={`px-6 py-3 rounded-full font-mono text-xs uppercase tracking-widest border ${themeBorder} shrink-0 bg-transparent hover:scale-105 transition-transform`}
-            >
-              {isPlayingAudio ? "stop audio stream" : "preview soundscape live"}
-            </button>
           </div>
 
+          <div className="flex h-8 items-end gap-1" aria-hidden="true">
+            {[10, 18, 12, 24, 16, 28, 14, 22, 11, 26, 17, 20].map((height, index) => (
+              <span
+                key={`${height}-${index}`}
+                className="w-1 rounded-full bg-[#D97706] transition-all duration-300"
+                style={{
+                  height: isAudioPlaying ? `${height}px` : '5px',
+                  animation: isAudioPlaying ? 'pulse 900ms ease-in-out infinite alternate' : 'none',
+                  animationDelay: `${index * 70}ms`,
+                }}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-
-      {/* --- SECTION 4: THE ANCHOR ETHOS --- */}
-      <section className={`w-full py-24 px-6 border-y ${themeBorder} text-center relative overflow-hidden`}>
-        <div className="max-w-3xl mx-auto">
-          <span className="font-mono text-xs uppercase tracking-widest opacity-60 block mb-6">our non-negotiable architectural truth</span>
-          <h2 className="font-serif text-3xl md:text-5xl font-light leading-relaxed lowercase mb-8">
-            "we built a secret, completely quiet shelter right behind the urban rush. steps away from the water, kilometers away from the noise."
-          </h2>
-          <div className="w-12 h-[1px] bg-current mx-auto opacity-30"></div>
-        </div>
-      </section>
-
-
-      {/* --- SECTION 5: DAILY HORIZON GRID --- */}
-      <section className="py-20 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
-          {/* Text Block tracking current state switch */}
+      <section id="experience" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
-            <span className="font-mono text-xs uppercase tracking-widest opacity-60 block mb-4">the dynamic atmosphere rhythm</span>
-            <h2 className="font-serif text-4xl font-light lowercase leading-relaxed mb-6">
-              how nakhyl breathes across twenty-four moon cycles
+            <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">first-shot impact</span>
+            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">
+              every scroll reveals another hidden courtyard.
             </h2>
-            <p className="font-sans text-sm tracking-wide opacity-80 leading-relaxed mb-8">
-              Watch how our structural space contours elegantly to match your state of being. Toggle the system switch above or observe our daily transformation below.
-            </p>
-
-            <div className="space-y-6">
-              <div className={`p-4 rounded-xl border ${!isNight ? 'border-current font-bold' : 'opacity-40 border-transparent'} transition-all`}>
-                <h4 className="font-serif text-lg lowercase mb-1">☀️ the high sun focus (08:00 - 17:00)</h4>
-                <p className="font-sans text-xs opacity-80 tracking-wide">Solar charged nomad desks, shade awnings, unheated cold microbrews, and pure work stillness.</p>
-              </div>
-              <div className={`p-4 rounded-xl border ${isNight ? 'border-current font-bold' : 'opacity-40 border-transparent'} transition-all`}>
-                <h4 className="font-serif text-lg lowercase mb-1">🌙 the spark gathering (18:00 - late)</h4>
-                <p className="font-sans text-xs opacity-80 tracking-wide">Open firepits ignited, low lanterns lit, habak leaves steeped, and dynamic intimate seating loops.</p>
-              </div>
-            </div>
           </div>
-
-          {/* Interactive Responsive Image Shell */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-[#D97706]/10 rounded-[4rem_2rem_5rem_3rem] blur-2xl -z-10 animate-pulse"></div>
-            <img 
-              src={isNight 
-                ? "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=1200&q=80" 
-                : "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
-              } 
-              alt="Oasis transition state" 
-              className="w-full h-[450px] object-cover rounded-[4rem_2rem_5rem_3rem] border border-current/10 shadow-xl transition-all duration-1000 filter grayscale-[20%]"
-            />
-          </div>
-
-        </div>
-      </section>
-
-
-      {/* --- SECTION 6: THE WEEKLY RITUALS RIBBON --- */}
-      <section className={`w-full py-12 border-y ${themeBorder} overflow-x-auto whitespace-nowrap scrollbar-none`}>
-        <div className="inline-flex space-x-12 px-6">
-          {[
-            { day: "mon / wed", title: "cinema wadi open air screenings", desc: "classic independent indie under stars" },
-            { day: "every thu", title: "acoustic authentic sand loops", desc: "unplugged regional music gathers" },
-            { day: "every sat", title: "the community alignment circle", desc: "slow storytelling tea rituals" },
-            { day: "daily sunrise", title: "silent palm meditation hours", desc: "absolute complete zero noise deck access" }
-          ].map((ritual, idx) => (
-            <div key={idx} className="inline-block w-[300px] whitespace-normal group">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-[#D97706] block mb-2">{ritual.day}</span>
-              <h4 className="font-serif text-xl lowercase mb-1 group-hover:underline transition-all">{ritual.title}</h4>
-              <p className="font-sans text-xs opacity-60 tracking-wide">{ritual.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-
-      {/* --- SECTION 7: THE LIVE FOOTPRINT STREAM --- */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <span className="font-mono text-xs uppercase tracking-widest opacity-60 block mb-2">unfiltered live footprints</span>
-          <h2 className="font-serif text-3xl lowercase">moments from the community layer</h2>
-        </div>
-
-        {/* Tactile Asymmetric Masonry Simulation */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { img: "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=600&q=80", rad: "rounded-[2rem_1rem_3rem_1.5rem]", user: "@nomad_lisa", text: "Finally a spot in Dahab that smells purely like mountain campfires." },
-            { img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80", rad: "rounded-[1rem_2.5rem_1.5rem_3rem]", user: "@sinai_wanderer", text: "No speakers. Just acoustic frames, wind, and hot tea loops." },
-            { img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=600&q=80", rad: "rounded-[3rem_1.5rem_2rem_2.5rem]", user: "@karl_codes", text: "The morning Wi-Fi under the palm tree shade is magic setup." },
-            { img: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=600&q=80", rad: "rounded-[1.5rem_2rem_1rem_3.5rem]", user: "@boho_spirit", text: "Cinema Wadi night felt like an old family living room on sand." }
-          ].map((item, idx) => (
-            <div key={idx} className={`p-4 border ${themeBorder} ${item.rad} flex flex-col justify-between hover:shadow-md transition-shadow`}>
-              <img src={item.img} alt="Guest snapshot" className={`w-full h-48 object-cover mb-4 ${item.rad}`} />
-              <div>
-                <p className="font-sans text-xs italic opacity-80 mb-3">"{item.text}"</p>
-                <span className="font-mono text-[10px] tracking-widest uppercase opacity-40">{item.user}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-
-      {/* --- SECTION 8: THE "VIRTUAL CAMPFIRE" CALLOUT --- */}
-      <section className={`w-full py-20 px-6 border-t ${themeBorder} bg-gradient-to-b from-transparent to-current/[0.02] text-center relative overflow-hidden`}>
-        <div className="absolute inset-0 flex items-center justify-center -z-10 opacity-10">
-          <div className="w-[400px] h-[400px] rounded-full bg-[#D97706] blur-[120px]"></div>
-        </div>
-
-        <div className="max-w-xl mx-auto">
-          {/* Animated Glow Campfire Asset Action Hook */}
-          <button 
-            onClick={() => setShowCampfireModal(true)}
-            className="w-16 h-16 rounded-full bg-stone-900 border border-[#D97706]/40 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(217,119,6,0.3)] hover:scale-110 transition-transform animate-bounce duration-1000"
-            title="Ignite the story overlay"
-          >
-            <span className="text-xl animate-pulse">🔥</span>
-          </button>
-          
-          <h3 className="font-serif text-2xl lowercase mb-3">gather around the digital fire</h3>
-          <p className="font-sans text-sm tracking-wide opacity-70 mb-6">
-            Click the glowing spark indicator above to open our ancestral story ledger: detailing local Bedouin heritage, the authentic sourcing of Habak leaves, and our oasis building blueprints.
+          <p className={cx('max-w-2xl text-sm leading-7 tracking-wide lg:justify-self-end', palette.muted)}>
+            The home page now uses the brand guide's raw contour principle: asymmetric frames, warm sand and palm contrast, amber action points, and real Google Maps venue captures instead of generic placeholders.
           </p>
         </div>
 
-        {/* MODAL OVERLAY INLINE ELEMENT */}
-        {showCampfireModal && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all animate-fadeIn">
-            <div className="bg-[#F4EBE1] text-[#2D4A3E] p-8 max-w-lg rounded-[2.5rem_1rem_4rem_2rem] border-2 border-[#D97706] text-left relative shadow-2xl">
-              <button 
-                onClick={() => setShowCampfireModal(false)}
-                className="absolute top-6 right-6 font-mono text-xs uppercase tracking-widest bg-[#2D4A3E] text-[#F4EBE1] px-2 py-1 rounded"
+        <div className="mt-12 grid gap-5 lg:grid-cols-3">
+          {EXPERIENCE_CARDS.map((card, index) => (
+            <article
+              key={card.title}
+              className={cx(
+                'group min-h-[31rem] overflow-hidden border bg-current/[0.025] shadow-xl transition duration-500 hover:-translate-y-1',
+                palette.hairline,
+                index === 0 && 'rounded-[3rem_1.2rem_2rem_1.5rem]',
+                index === 1 && 'rounded-[1.4rem_3rem_1.8rem_2.4rem]',
+                index === 2 && 'rounded-[2.4rem_1.6rem_3rem_1.1rem]',
+              )}
+            >
+              <div className="h-64 overflow-hidden">
+                <img
+                  src={card.image}
+                  alt={`${card.title} at Nakhyl Zone`}
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+              <div className="p-6">
+                <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#D97706]">{card.kicker}</span>
+                <h3 className="mt-3 font-serif text-3xl font-light lowercase leading-tight">{card.title}</h3>
+                <p className={cx('mt-4 text-sm leading-7', palette.muted)}>{card.body}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className={cx('border-y px-5 py-20 sm:px-8 lg:px-10', palette.hairline)}>
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div className="relative overflow-hidden rounded-[1.4rem_3.2rem_2.6rem_1.2rem] border border-current/10">
+            <img src={seaImage} alt="Dahab coastline near Nakhyl Zone" className="h-[32rem] w-full object-cover" loading="lazy" />
+            <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(10,17,24,0.72),rgba(10,17,24,0.06))]" />
+            <div className="absolute bottom-5 left-5 right-5 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] border border-white/15 bg-black/45 p-5 text-[#F4EBE1] backdrop-blur-md">
+              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">accessible sanctuary</p>
+              <p className="mt-2 font-serif text-2xl lowercase">steps from the water, emotionally far from the noise.</p>
+            </div>
+          </div>
+
+          <div>
+            <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">optimized guest flow</span>
+            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">
+              from map discovery to confirmed visit in three clear moves.
+            </h2>
+            <div className="mt-8 space-y-4">
+              {JOURNEY.map((step) => {
+                const Icon = step.icon;
+                return (
+                  <div key={step.title} className={cx('flex gap-4 rounded-[1.8rem_0.9rem_2.2rem_1.1rem] border p-5', palette.panelSolid)}>
+                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#D97706]/15 text-[#D97706]">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div>
+                      <h3 className="font-serif text-xl lowercase">{step.title}</h3>
+                      <p className={cx('mt-1 text-sm leading-6', palette.muted)}>{step.text}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+        <div className="grid gap-8 lg:grid-cols-12">
+          <div className={cx('rounded-[2.6rem_1.4rem_3.4rem_1.7rem] border p-6 sm:p-8 lg:col-span-5', palette.panelSolid)}>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">ambient state</span>
+                <h2 className="mt-3 font-serif text-3xl font-light lowercase">chase sun or follow sparks.</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsNight((value) => !value)}
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-current/15 bg-current/[0.05] transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+                aria-label={isNight ? 'Switch to day mode' : 'Switch to night mode'}
               >
-                esc ✕
+                {isNight ? <Sun className="h-5 w-5" aria-hidden="true" /> : <Moon className="h-5 w-5" aria-hidden="true" />}
               </button>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-[#D97706] block mb-2">heritage ledger &bull; ritual identity</span>
-              <h4 className="font-serif text-3xl lowercase mb-4">the ritual of genuine sanctuary</h4>
-              <p className="font-sans text-sm tracking-wide leading-relaxed mb-4">
-                In the desert, fire isn’t just warmth—it’s a physical invitation to slow down. Our space was designed directly alongside the local elders of South Sinai to guarantee that modern digital workers do not disturb or erase local memory, but instead sit quietly at its edge.
-              </p>
-              <p className="font-sans text-xs italic opacity-75">
-                Every Thursday night, we brew tea over raw mountain scrub embers and listen without deadlines.
+            </div>
+            <p className={cx('mt-5 text-sm leading-7', palette.muted)}>
+              The interface changes the same way the venue does: sand and palm for bright work sessions, deep indigo and amber for the fire-lit evening program.
+            </p>
+            <div className="mt-7 grid grid-cols-2 gap-3">
+              {[
+                [Wifi, 'nomad ready', 'quiet work pockets'],
+                [Users, 'community', 'hosted circles'],
+                [Headphones, 'low noise', 'acoustic-first nights'],
+                [Sparkles, 'premium raw', 'organic visual system'],
+              ].map(([Icon, label, text]) => (
+                <div key={label} className="rounded-[1.2rem_0.7rem_1.4rem_0.9rem] border border-current/10 bg-current/[0.035] p-4">
+                  <Icon className="h-5 w-5 text-[#D97706]" aria-hidden="true" />
+                  <p className="mt-3 text-xs font-bold uppercase tracking-widest">{label}</p>
+                  <p className={cx('mt-1 text-xs leading-5', palette.muted)}>{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:col-span-7">
+            {RITUALS.map(([tag, title, text]) => (
+              <article key={title} className={cx('rounded-[1.8rem_0.9rem_2.4rem_1.2rem] border p-6', palette.panel)}>
+                <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">{tag}</span>
+                <h3 className="mt-4 font-serif text-2xl font-light lowercase">{title}</h3>
+                <p className={cx('mt-3 text-sm leading-7', palette.muted)}>{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={cx('border-y px-5 py-20 sm:px-8 lg:px-10', palette.hairline)}>
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">authentic social stream</span>
+              <h2 className="mt-4 font-serif text-4xl font-light lowercase">real textures, real courtyard proof.</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsCampfireOpen(true)}
+              className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[1rem_1.8rem_1.3rem_0.9rem] border border-[#D97706]/40 bg-[#D97706]/10 px-5 text-xs font-bold uppercase tracking-widest text-[#D97706] transition hover:bg-[#D97706] hover:text-[#0A1118] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+            >
+              <Flame className="h-4 w-4" aria-hidden="true" />
+              open campfire story
+            </button>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {SOCIAL_IMAGES.map((image, index) => (
+              <div
+                key={image}
+                className={cx(
+                  'overflow-hidden border border-current/10 bg-current/[0.025]',
+                  index % 2 === 0 ? 'rounded-[2.2rem_0.9rem_2.8rem_1.4rem]' : 'rounded-[0.9rem_2.2rem_1.4rem_2.8rem]',
+                )}
+              >
+                <img src={image} alt="Nakhyl Zone courtyard social proof" className="h-72 w-full object-cover" loading="lazy" />
+              </div>
+            ))}
+          </div>
+
+          <div className={cx('mt-6 grid gap-4 rounded-[2.4rem_1rem_3rem_1.4rem] border p-5 sm:grid-cols-[0.8fr_1.2fr]', palette.panelSolid)}>
+            <img src={brandBoardImage} alt="Nakhyl Zone brand board and design references" className="h-52 w-full rounded-[1.6rem_0.8rem_2rem_1rem] object-cover" loading="lazy" />
+            <div className="flex flex-col justify-center">
+              <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">brand system applied</span>
+              <p className="mt-3 font-serif text-2xl font-light lowercase leading-snug">
+                sand, palm, indigo, and amber now drive every visual decision instead of living only in documentation.
               </p>
             </div>
           </div>
-        )}
+        </div>
       </section>
 
-    </div>
+      {isCampfireOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="campfire-title"
+        >
+          <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2.8rem_1.2rem_3.8rem_1.8rem] border border-[#D97706]/60 bg-[#F4EBE1] p-6 text-[#2D4A3E] shadow-2xl sm:p-8">
+            <button
+              type="button"
+              onClick={() => setIsCampfireOpen(false)}
+              className="absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2D4A3E] text-[#F4EBE1] transition hover:bg-[#D97706] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+              aria-label="Close campfire story"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">virtual campfire</span>
+            <h2 id="campfire-title" className="mt-4 max-w-lg font-serif text-4xl font-light lowercase leading-tight">
+              the hospitality ritual at the center of the courtyard.
+            </h2>
+            <p className="mt-5 text-sm leading-7 text-[#2D4A3E]/75">
+              At Nakhyl Zone, the flame is the arrival point: tea is brewed slowly, guests settle at floor level, and music stays human-scale. The digital experience now mirrors that rhythm with warmer interactions, clearer booking intent, and quieter navigation.
+            </p>
+            <div className="mt-6 rounded-[1.6rem_0.8rem_2rem_1rem] border border-[#2D4A3E]/15 bg-[#2D4A3E]/5 p-5">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D97706]">guest promise</p>
+              <p className="mt-2 text-sm leading-7 text-[#2D4A3E]/75">
+                No loud beachfront clutter. No remote-camp friction. Just an accessible city sanctuary built from palm shade, acoustic rituals, and attentive local hosting.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
   );
 }

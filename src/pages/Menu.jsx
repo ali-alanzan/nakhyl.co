@@ -1,387 +1,618 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  Camera,
+  Clock3,
+  Flame,
+  Leaf,
+  MapPin,
+  MessageCircle,
+  Moon,
+  Pause,
+  Play,
+  Search,
+  Sun,
+  UtensilsCrossed,
+  Volume2,
+  X,
+} from 'lucide-react';
 
-export default function NakhylKitchenMenu() {
-  // Master Dynamic Layout State: Managing Day (☀️ Chase the Sun) vs Night (🌙 Follow the Sparks)
+import heroImage from '../../identity/Nakhyl-zone-20.jpeg';
+import counterImage from '../../identity/Nakhyl-zone-4.jpeg';
+import teaImage from '../../identity/Nakhyl-zone-13.jpeg';
+import sunriseImage from '../../identity/Nakhyl-zone-1.jpeg';
+import elixirImage from '../../identity/Nakhyl-zone-6.jpeg';
+import flatbreadImage from '../../identity/Nakhyl-zone-8.jpeg';
+import mandiImage from '../../identity/Nakhyl-zone-14.jpeg';
+import teaMenuImage from '../../identity/Nakhyl-zone-11.jpeg';
+import ribsImage from '../../identity/Nakhyl-zone-16.jpeg';
+import socialOne from '../../identity/Nakhyl-zone-2.jpeg';
+import socialTwo from '../../identity/Nakhyl-zone-7.jpeg';
+import socialThree from '../../identity/Nakhyl-zone-18.jpeg';
+
+const WHATSAPP_NUMBER = '201000000000';
+
+const filters = ['All', 'Fire-Cooked', 'Sinai Herbs', 'Gathering Platters'];
+
+const menuItems = [
+  {
+    id: 1,
+    title: 'Bedouin Sunrise Platter',
+    price: 'EGP 240',
+    description:
+      'Slow farm eggs, mountain cheese, hand-mashed foul with olive oil, and fire-hot flatbread from the mud oven.',
+    category: 'Morning Under the Palms',
+    tag: 'Gathering Platters',
+    state: 'day',
+    image: sunriseImage,
+    accent: 'For shared starts',
+  },
+  {
+    id: 2,
+    title: 'The Energizer Nomad Elixir',
+    price: 'EGP 110',
+    description:
+      'Cold-pressed Sinai lemonade lifted with garden mint and a light drizzle of desert blossom honey.',
+    category: 'Morning Under the Palms',
+    tag: 'Sinai Herbs',
+    state: 'day',
+    image: elixirImage,
+    accent: 'Bright and cooling',
+  },
+  {
+    id: 3,
+    title: 'Hand-Rolled Fig & Goat Cheese Flatbread',
+    price: 'EGP 185',
+    description:
+      'Blistered artisan flatbread with mountain goat cheese, sun-dried Sinai figs, and local thyme.',
+    category: 'Morning Under the Palms',
+    tag: 'Fire-Cooked',
+    state: 'day',
+    image: flatbreadImage,
+    accent: 'From the clay oven',
+  },
+  {
+    id: 4,
+    title: 'Nakhyl Mandi Chicken',
+    price: 'EGP 420',
+    description:
+      'Wood-smoked half chicken slow-cooked over pit embers and served over spiced aromatic rice.',
+    category: 'Earth & Fire Dinners',
+    tag: 'Fire-Cooked',
+    state: 'night',
+    image: mandiImage,
+    accent: 'Six-hour ember cook',
+  },
+  {
+    id: 5,
+    title: 'Bedouin Campfire Tea',
+    price: 'EGP 75',
+    description:
+      'Loose-leaf black tea brewed over open embers with wild Habak mint or hand-gathered desert sage.',
+    category: 'Earth & Fire Dinners',
+    tag: 'Sinai Herbs',
+    state: 'night',
+    image: teaMenuImage,
+    accent: 'Habak and sage',
+  },
+  {
+    id: 6,
+    title: 'The Oasis Smoked Rib Platter',
+    price: 'EGP 580',
+    description:
+      'Slow-roasted lamb ribs glazed with pomegranate molasses and dates for open-air circle gatherings.',
+    category: 'Earth & Fire Dinners',
+    tag: 'Gathering Platters',
+    state: 'night',
+    image: ribsImage,
+    accent: 'Built for the table',
+  },
+];
+
+const socialPhotos = [
+  { src: socialOne, label: 'Palm grove seating' },
+  { src: socialTwo, label: 'Low table gathering' },
+  { src: socialThree, label: 'Open-air evening at Nakhyl Zone' },
+];
+
+function getSectionItems(items, state) {
+  return items.filter((item) => item.state === state);
+}
+
+function MenuCard({ item, isNight }) {
+  return (
+    <article
+      className={`group flex min-h-full flex-col overflow-hidden border transition duration-500 hover:-translate-y-1 focus-within:-translate-y-1 ${
+        isNight
+          ? 'border-[#F4EBE1]/10 bg-[#121A23]/80 shadow-[0_22px_70px_rgba(0,0,0,0.26)]'
+          : 'border-[#2D4A3E]/12 bg-white/55 shadow-[0_18px_55px_rgba(45,74,62,0.08)]'
+      } rounded-[1.8rem_0.9rem_2.6rem_1.2rem]`}
+    >
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <img
+          src={item.image}
+          alt=""
+          loading="lazy"
+          className="h-full w-full object-cover transition duration-[1200ms] group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1118]/70 via-[#0A1118]/10 to-transparent" />
+        <span className="absolute left-4 top-4 rounded-[1rem_0.55rem_1.2rem_0.75rem] border border-white/20 bg-[#0A1118]/45 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[#F4EBE1] backdrop-blur-md">
+          {item.tag}
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-6 md:p-7">
+        <div className="mb-5 flex items-start justify-between gap-5">
+          <div>
+            <p
+              className={`mb-2 text-[0.64rem] font-bold uppercase tracking-[0.28em] ${
+                isNight ? 'text-[#D97706]' : 'text-[#2D4A3E]/55'
+              }`}
+            >
+              {item.accent}
+            </p>
+            <h3 className="font-serif text-2xl lowercase leading-snug text-current">
+              {item.title}
+            </h3>
+          </div>
+          <p
+            className={`shrink-0 rounded-[0.9rem_0.5rem_1rem_0.7rem] px-3 py-2 text-sm font-bold ${
+              isNight ? 'bg-[#D97706] text-[#0A1118]' : 'bg-[#2D4A3E] text-[#F4EBE1]'
+            }`}
+          >
+            {item.price}
+          </p>
+        </div>
+        <p className="mt-auto text-sm leading-7 opacity-75">{item.description}</p>
+      </div>
+    </article>
+  );
+}
+
+function MenuSection({ eyebrow, icon: Icon, items, isNight }) {
+  return (
+    <section className="scroll-mt-28" aria-labelledby={`${eyebrow}-heading`}>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div
+            className={`mb-3 inline-flex items-center gap-2 rounded-[1rem_0.6rem_1.25rem_0.8rem] border px-3 py-2 text-[0.64rem] font-bold uppercase tracking-[0.28em] ${
+              isNight
+                ? 'border-[#D97706]/25 text-[#D97706]'
+                : 'border-[#2D4A3E]/15 text-[#2D4A3E]/70'
+            }`}
+          >
+            <Icon className="h-4 w-4" aria-hidden="true" />
+            {items.length} selections
+          </div>
+          <h2 id={`${eyebrow}-heading`} className="font-serif text-4xl lowercase leading-tight md:text-5xl">
+            {eyebrow}
+          </h2>
+        </div>
+        <div
+          className={`hidden h-px flex-1 sm:block ${
+            isNight ? 'bg-[#D97706]/25' : 'bg-[#2D4A3E]/15'
+          }`}
+        />
+      </div>
+
+      {items.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {items.map((item) => (
+            <MenuCard key={item.id} item={item} isNight={isNight} />
+          ))}
+        </div>
+      ) : (
+        <div
+          className={`rounded-[2rem_1rem_2.6rem_1.4rem] border px-6 py-10 text-center text-sm ${
+            isNight
+              ? 'border-[#F4EBE1]/10 bg-[#121A23]/70 text-[#F4EBE1]/65'
+              : 'border-[#2D4A3E]/12 bg-white/45 text-[#2D4A3E]/65'
+          }`}
+        >
+          No dishes in this section match the selected filter.
+        </div>
+      )}
+    </section>
+  );
+}
+
+export default function NakhylKitchenMenuRedesigned() {
   const [isNight, setIsNight] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [whatsappMessage, setWhatsappMessage] = useState('');
-  
-  // Virtual Campfire Overlay State
+  const [orderRequest, setOrderRequest] = useState('');
   const [showCampfireModal, setShowCampfireModal] = useState(false);
-  // Audio Controller State
   const [isPlayingSound, setIsPlayingSound] = useState(false);
-
-  // Time tracker for Ambient Sensor Console (Dahab Local Time)
   const [dahabTime, setDahabTime] = useState('');
 
   useEffect(() => {
     const updateDahabTime = () => {
-      const options = {
-        timeZone: 'Africa/Cairo',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-      };
-      setDahabTime(new Intl.DateTimeFormat('en-US', options).format(new Date()));
+      setDahabTime(
+        new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Africa/Cairo',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        }).format(new Date()),
+      );
     };
+
     updateDahabTime();
-    const interval = setInterval(updateDahabTime, 1000);
-    return () => clearInterval(interval);
+    const interval = window.setInterval(updateDahabTime, 30000);
+    return () => window.clearInterval(interval);
   }, []);
 
-  // Menu Data Structure containing tags, day/night states, and tailored descriptions
-  const menuItems = [
-    {
-      id: 1,
-      title: "Bedouin Sunrise Platter",
-      price: "EGP 240",
-      description: "Slow farm eggs, local mountain cheeses, fresh hand-mashed foul with olive oil, served alongside fire-hot flatbread directly from the mud oven.",
-      category: "Morning Under the Palms",
-      tag: "Gathering Platters",
-      state: "day"
-    },
-    {
-      id: 2,
-      title: "The Energizer Nomad Elixir",
-      price: "EGP 110",
-      description: "Fresh cold-pressed Sinai lemonades infused with wild garden mint and a delicate drizzle of organic desert blossom honey.",
-      category: "Morning Under the Palms",
-      tag: "Sinai Herbs",
-      state: "day"
-    },
-    {
-      id: 3,
-      title: "Hand-Rolled Fig & Goat Cheese Flatbread",
-      price: "EGP 185",
-      description: "Crisp artisan flatbread topped with soft mountain goat cheese, sun-dried Sinai figs, and a dusting of local thyme.",
-      category: "Morning Under the Palms",
-      tag: "Fire-Cooked",
-      state: "day"
-    },
-    {
-      id: 4,
-      title: "Nakhyl Mandi Chicken",
-      price: "EGP 420",
-      description: "Tender, wood-smoked half chicken slow-cooked over pit embers for six hours, buried under sand, served over spiced long-grain aromatic rice.",
-      category: "Earth & Fire Dinners",
-      tag: "Fire-Cooked",
-      state: "night"
-    },
-    {
-      id: 5,
-      title: "Bedouin Campfire Tea (Habak & Sage)",
-      price: "EGP 75",
-      description: "Authentic loose-leaf black tea brewed meticulously over real open embers, heavily infused with wild Habak mint or hand-gathered desert sage.",
-      category: "Earth & Fire Dinners",
-      tag: "Sinai Herbs",
-      state: "night"
-    },
-    {
-      id: 6,
-      title: "The Oasis Smoked Rib Platters",
-      price: "EGP 580",
-      description: "Shared slow-roasted lamb ribs glazed with pomegranate molasses and dates, intended for open-air circle gatherings under the sky.",
-      category: "Earth & Fire Dinners",
-      tag: "Gathering Platters",
-      state: "night"
-    }
-  ];
+  useEffect(() => {
+    if (!showCampfireModal) return undefined;
 
-  const filters = ['All', 'Fire-Cooked', 'Sinai Herbs', 'Gathering Platters'];
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setShowCampfireModal(false);
+      }
+    };
 
-  const filteredMenu = menuItems.filter(item => {
-    const matchesFilter = activeFilter === 'All' || item.tag === activeFilter;
-    return matchesFilter;
-  });
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showCampfireModal]);
 
-  const handleWhatsappSubmit = (e) => {
-    e.preventDefault();
-    if (!whatsappMessage.trim()) return;
-    const encodedText = encodeURIComponent(`Salutations Nakhyl Oasis Team! I am planning my arrival and would love to request: ${whatsappMessage}`);
-    window.open(`https://wa.me/201000000000?text=${encodedText}`, '_blank');
+  const filteredMenu = useMemo(() => {
+    return menuItems.filter((item) => activeFilter === 'All' || item.tag === activeFilter);
+  }, [activeFilter]);
+
+  const dayItems = useMemo(() => getSectionItems(filteredMenu, 'day'), [filteredMenu]);
+  const nightItems = useMemo(() => getSectionItems(filteredMenu, 'night'), [filteredMenu]);
+
+  const handleWhatsappSubmit = (event) => {
+    event.preventDefault();
+    const trimmedRequest = orderRequest.trim();
+
+    if (!trimmedRequest) return;
+
+    const text = encodeURIComponent(
+      `Hello Nakhyl Zone. I would like to request from the kitchen menu: ${trimmedRequest}`,
+    );
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
-    <div 
-      className={`min-h-screen font-sans transition-colors duration-[1000ms] ease-in-out ${
+    <div
+      className={`min-h-screen overflow-hidden font-sans transition-colors duration-700 ${
         isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]'
       }`}
-      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
     >
-      {/* HEADER / NAVIGATION BAR */}
-      <nav className={`px-6 py-6 md:px-12 flex justify-between items-center border-b transition-colors duration-500 ${
-        isNight ? 'border-amber-700/20' : 'border-[#2D4A3E]/10'
-      }`}>
-        <div className="flex flex-col">
-          <span className="font-serif text-2xl tracking-wide lowercase leading-none">nakhyl zone</span>
-          <span className="text-[10px] tracking-[0.3em] uppercase mt-1 opacity-70">cultural oasis • dahab</span>
-        </div>
+      <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden">
+        <img src={heroImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div
+          className={`absolute inset-0 ${
+            isNight
+              ? 'bg-gradient-to-b from-[#0A1118]/65 via-[#0A1118]/58 to-[#0A1118]'
+              : 'bg-gradient-to-b from-[#0A1118]/20 via-[#F4EBE1]/60 to-[#F4EBE1]'
+          }`}
+        />
 
-        {/* Global Dynamic Ambient Control Switches */}
-        <div className="flex items-center gap-6">
-          <button 
-            onClick={() => setIsNight(!isNight)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs uppercase tracking-widest transition-all duration-300 ${
-              isNight 
-                ? 'border-amber-600/40 bg-amber-950/20 text-amber-500 hover:bg-amber-900/30' 
-                : 'border-[#2D4A3E]/20 bg-[#2D4A3E]/5 text-[#2D4A3E] hover:bg-[#2D4A3E]/10'
-            }`}
-          >
-            {isNight ? (
-              <>
-                <span className="animate-pulse">🌙</span> Follow the Sparks
-              </>
-            ) : (
-              <>
-                <span>☀️</span> Chase the Sun
-              </>
-            )}
-          </button>
-        </div>
-      </nav>
-
-      {/* SECTION 1: THE SMOKED CANVAS INTRO */}
-      <header className="max-w-6xl mx-auto px-6 pt-16 pb-12 text-center">
-        <span className={`text-xs tracking-[0.4em] uppercase font-semibold block mb-4 ${isNight ? 'text-amber-500' : 'text-[#2D4A3E]/70'}`}>
-          The Slow Culinary Movement
-        </span>
-        <h1 className="font-serif text-4xl md:text-6xl lowercase tracking-tight max-w-3xl mx-auto leading-[1.15] mb-8">
-          spiced by local tradition, cooked slowly on open embers
-        </h1>
-        <p className="text-sm md:text-base max-w-2xl mx-auto opacity-80 leading-relaxed mb-12 tracking-wide">
-          In our kitchen, time is an essential seasoning. We forgo generic kitchen tech to embrace the ancestral warmth of natural palm groves, mud ovens, and heavy firewood. Every bite traces back to the sand.
-        </p>
-
-        {/* Tactical Custom Filter Switches */}
-        <div className="flex flex-wrap justify-center gap-3 md:gap-4 max-w-xl mx-auto">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-5 py-2.5 rounded-[1.5rem_0.8rem_1.8rem_1rem] text-xs uppercase tracking-widest transition-all duration-300 ${
-                activeFilter === filter
-                  ? isNight 
-                    ? 'bg-[#D97706] text-[#0A1118] font-bold shadow-lg shadow-amber-600/20' 
-                    : 'bg-[#2D4A3E] text-[#F4EBE1] font-bold shadow-md shadow-[#2D4A3E]/10'
-                  : isNight
-                    ? 'bg-slate-900/40 border border-amber-600/10 text-[#F4EBE1]/70 hover:border-amber-600/40'
-                    : 'bg-white/40 border border-[#2D4A3E]/10 text-[#2D4A3E]/80 hover:bg-white/80'
+        <div className="relative z-10 mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-7xl flex-col px-5 py-8 sm:px-8 lg:px-12">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div
+              className={`inline-flex items-center gap-3 rounded-[1.4rem_0.7rem_1.8rem_1rem] border px-4 py-3 backdrop-blur-md ${
+                isNight
+                  ? 'border-[#F4EBE1]/12 bg-[#0A1118]/45'
+                  : 'border-[#F4EBE1]/50 bg-[#F4EBE1]/42'
               }`}
             >
-              {filter === 'All' ? '[ All Alchemy ]' : `[ ${filter} ]`}
-            </button>
-          ))}
-        </div>
-      </header>
-
-      <hr className={`max-w-6xl mx-auto border-t my-6 opacity-40 ${isNight ? 'border-amber-900/30' : 'border-[#2D4A3E]/20'}`} />
-
-      {/* SECTION 2 & SECTION 3: CORE DYNAMIC MENU STATES CONTAINER */}
-      <main className="max-w-6xl mx-auto px-6 py-12">
-        
-        {/* Morning / Daytime Anchor Grid Grid Layer */}
-        <section className="mb-20">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="text-xl md:text-2xl font-serif lowercase">morning under the palms</span>
-            <div className={`h-[1px] flex-1 opacity-20 ${isNight ? 'bg-amber-500' : 'bg-[#2D4A3E]'}`} />
-            <span className="text-[10px] tracking-widest uppercase opacity-60">☀️ Day Cycle</span>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredMenu.filter(i => i.state === 'day').map(item => (
-              <div 
-                key={item.id} 
-                className={`p-8 transition-all duration-500 transform hover:-translate-y-1 relative group ${
-                  isNight 
-                    ? 'bg-slate-900/20 border border-amber-900/10 rounded-[2.2rem_1.1rem_3.5rem_1.8rem]' 
-                    : 'bg-white/50 border border-[#2D4A3E]/10 rounded-[3rem_1.5rem_2.5rem_1.2rem] shadow-sm shadow-[#2D4A3E]/5'
-                }`}
-              >
-                <div className="absolute top-4 right-4 text-[10px] tracking-widest opacity-40 uppercase border px-2 py-0.5 rounded-full border-current">
-                  {item.tag}
-                </div>
-                <h3 className="font-serif text-2xl lowercase pr-16 mb-2 tracking-wide group-hover:text-amber-600 transition-colors duration-300">
-                  {item.title}
-                </h3>
-                <span className="font-serif text-lg font-medium block mb-4 opacity-90">{item.price}</span>
-                <p className="text-xs leading-relaxed opacity-70 tracking-wide">{item.description}</p>
+              <UtensilsCrossed className="h-5 w-5 text-[#D97706]" aria-hidden="true" />
+              <div>
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.32em]">Nakhyl Kitchen</p>
+                <p className="mt-1 text-[0.72rem] uppercase tracking-[0.22em] opacity-70">
+                  Cultural oasis menu
+                </p>
               </div>
-            ))}
-          </div>
-          {filteredMenu.filter(i => i.state === 'day').length === 0 && (
-            <p className="text-center text-xs opacity-50 italic py-6">No daytime platters match this filter selection.</p>
-          )}
-        </section>
+            </div>
 
-        {/* Night State / Earth & Fire Evening Section */}
-        <section className="mb-12">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="text-xl md:text-2xl font-serif lowercase">earth & fire dinners</span>
-            <div className={`h-[1px] flex-1 opacity-20 ${isNight ? 'bg-amber-500' : 'bg-[#2D4A3E]'}`} />
-            <span className="text-[10px] tracking-widest uppercase opacity-60">🌙 Ember Cycle</span>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredMenu.filter(i => i.state === 'night').map(item => (
-              <div 
-                key={item.id} 
-                className={`p-8 transition-all duration-500 transform hover:-translate-y-1 relative group ${
-                  isNight 
-                    ? 'bg-amber-950/10 border border-amber-600/20 rounded-[2.5rem_1.2rem_4rem_2rem] shadow-xl shadow-black/40' 
-                    : 'bg-[#FAF6F0] border border-[#2D4A3E]/15 rounded-[1.8rem_2.8rem_1.2rem_3.2rem]'
-                }`}
-              >
-                <div className="absolute top-4 right-4 text-[10px] tracking-widest opacity-50 uppercase border px-2 py-0.5 rounded-full border-amber-600 text-amber-600">
-                  {item.tag}
-                </div>
-                <h3 className="font-serif text-2xl lowercase pr-16 mb-2 tracking-wide text-amber-600 md:text-inherit group-hover:text-amber-500 transition-colors duration-300">
-                  {item.title}
-                </h3>
-                <span className="font-serif text-lg font-medium block mb-4 text-[#D97706]">{item.price}</span>
-                <p className="text-xs leading-relaxed opacity-70 tracking-wide">{item.description}</p>
-              </div>
-            ))}
-          </div>
-          {filteredMenu.filter(i => i.state === 'night').length === 0 && (
-            <p className="text-center text-xs opacity-50 italic py-6">No night hearth platters match this filter selection.</p>
-          )}
-        </section>
-
-      </main>
-
-      {/* SECTION 4: DIRECT COUNTER ORDERING VIA CONVERSATIONAL FORM */}
-      <section className="max-w-4xl mx-auto px-6 py-12 mb-24">
-        <div className={`p-8 md:p-12 text-center shadow-xl relative overflow-hidden ${
-          isNight 
-            ? 'bg-slate-950 border border-amber-600/20 rounded-[3.5rem_2rem_4rem_1.5rem]' 
-            : 'bg-[#EAE1D5] border border-[#2D4A3E]/15 rounded-[2.5rem_4rem_1.5rem_3rem]'
-        }`}>
-          <div className="absolute top-0 right-0 p-4 opacity-10 font-serif text-8xl pointer-events-none select-none">
-            Habak
-          </div>
-
-          <span className="text-[10px] tracking-[0.3em] uppercase block opacity-60 mb-2">Frictionless Nomadic Service</span>
-          <h2 className="font-serif text-3xl md:text-4xl lowercase mb-4 tracking-tight">
-            want your tea ready when you walk in?
-          </h2>
-          <p className="text-xs md:text-sm max-w-lg mx-auto opacity-80 mb-8 leading-relaxed">
-            Send your order straight to our open fire counter. Type what you need, specify your arrival time, and bypass standard waiting queues.
-          </p>
-
-          <form onSubmit={handleWhatsappSubmit} className="max-w-xl mx-auto flex flex-col sm:flex-row gap-3">
-            <input 
-              type="text"
-              value={whatsappMessage}
-              onChange={(e) => setWhatsappMessage(e.target.value)}
-              placeholder="e.g., 2 Mints Lemonades & a Sunrise Platter in 20 minutes..."
-              className={`flex-1 px-5 py-4 text-xs tracking-wide rounded-[1.5rem_1rem_2rem_1rem] focus:outline-none transition-all duration-300 border ${
-                isNight 
-                  ? 'bg-[#0A1118] text-[#F4EBE1] border-amber-600/20 focus:border-amber-500' 
-                  : 'bg-[#F4EBE1] text-[#2D4A3E] border-[#2D4A3E]/20 focus:border-[#2D4A3E]'
-              }`}
-            />
             <button
-              type="submit"
-              className="px-6 py-4 rounded-[1rem_1.5rem_1rem_2rem] text-xs font-bold uppercase tracking-widest bg-[#D97706] text-white hover:bg-amber-600 transition-all duration-300 shadow-md shadow-amber-600/20 whitespace-nowrap"
+              type="button"
+              onClick={() => setIsNight((current) => !current)}
+              className={`inline-flex min-h-12 items-center gap-3 rounded-[1.6rem_0.8rem_1.9rem_1rem] border px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D97706] ${
+                isNight
+                  ? 'border-[#D97706]/35 bg-[#D97706] text-[#0A1118]'
+                  : 'border-[#2D4A3E]/20 bg-[#2D4A3E] text-[#F4EBE1]'
+              }`}
+              aria-pressed={isNight}
             >
-              🔥 Wire to WhatsApp
+              {isNight ? <Moon className="h-4 w-4" aria-hidden="true" /> : <Sun className="h-4 w-4" aria-hidden="true" />}
+              {isNight ? 'Follow the Sparks' : 'Chase the Sun'}
             </button>
-          </form>
+          </div>
+
+          <div className="grid flex-1 items-end gap-10 pb-8 pt-20 lg:grid-cols-[minmax(0,1fr)_22rem] lg:pt-28">
+            <div className="max-w-4xl">
+              <p
+                className={`mb-5 text-[0.68rem] font-bold uppercase tracking-[0.42em] ${
+                  isNight ? 'text-[#D97706]' : 'text-[#2D4A3E]/75'
+                }`}
+              >
+                Slow fire, palm shade, Sinai herbs
+              </p>
+              <h1 className="font-serif text-5xl lowercase leading-[1.03] sm:text-6xl lg:text-7xl">
+                spiced by local tradition, cooked slowly on open embers
+              </h1>
+              <p className="mt-7 max-w-2xl text-base leading-8 opacity-82 md:text-lg">
+                A refined menu experience for nomads, families, and evening circles. Filter quickly,
+                browse visually, and send your kitchen request before you arrive.
+              </p>
+
+              <div className="mt-9 flex flex-wrap gap-3" role="tablist" aria-label="Menu filters">
+                {filters.map((filter) => {
+                  const isActive = activeFilter === filter;
+                  return (
+                    <button
+                      key={filter}
+                      type="button"
+                      onClick={() => setActiveFilter(filter)}
+                      className={`min-h-11 rounded-[1.3rem_0.65rem_1.55rem_0.9rem] border px-4 py-2.5 text-xs font-bold uppercase tracking-[0.22em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D97706] ${
+                        isActive
+                          ? isNight
+                            ? 'border-[#D97706] bg-[#D97706] text-[#0A1118] shadow-[0_0_28px_rgba(217,119,6,0.28)]'
+                            : 'border-[#2D4A3E] bg-[#2D4A3E] text-[#F4EBE1] shadow-[0_18px_40px_rgba(45,74,62,0.15)]'
+                          : isNight
+                            ? 'border-[#F4EBE1]/14 bg-[#0A1118]/40 text-[#F4EBE1] hover:border-[#D97706]/60'
+                            : 'border-[#2D4A3E]/15 bg-[#F4EBE1]/58 text-[#2D4A3E] hover:bg-white/70'
+                      }`}
+                      role="tab"
+                      aria-selected={isActive}
+                    >
+                      {filter}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <aside
+              className={`rounded-[2.4rem_1rem_3.2rem_1.45rem] border p-5 backdrop-blur-xl ${
+                isNight
+                  ? 'border-[#F4EBE1]/12 bg-[#0A1118]/60'
+                  : 'border-[#F4EBE1]/55 bg-[#F4EBE1]/58'
+              }`}
+              aria-label="Live menu context"
+            >
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.32em] opacity-62">
+                    Dahab local time
+                  </p>
+                  <p className="mt-1 font-serif text-3xl lowercase">{dahabTime || '--:--'}</p>
+                </div>
+                <Clock3 className="h-8 w-8 text-[#D97706]" aria-hidden="true" />
+              </div>
+              <div className={`h-px ${isNight ? 'bg-[#F4EBE1]/10' : 'bg-[#2D4A3E]/12'}`} />
+              <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] opacity-55">
+                    Showing
+                  </p>
+                  <p className="mt-1">{filteredMenu.length} dishes</p>
+                </div>
+                <div>
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] opacity-55">
+                    Best for
+                  </p>
+                  <p className="mt-1">Walk-ins</p>
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
       </section>
 
-      {/* FLOATING ACTION ACCENTS: THE VIRTUAL CAMPFIRE & MICRO-INTERACTION TRIGGERS */}
-      <div className="fixed bottom-24 right-6 flex flex-col gap-3 z-40">
-        <button 
-          onClick={() => setShowCampfireModal(true)}
-          className="w-12 h-12 bg-[#D97706] text-white rounded-full flex items-center justify-center shadow-xl shadow-amber-600/30 hover:scale-110 transition-transform duration-300 group"
-          title="Virtual Campfire Ritual"
-        >
-          <span className="text-xl animate-pulse group-hover:rotate-12 transition-transform">🔥</span>
-        </button>
-      </div>
+      <main className="mx-auto w-full max-w-7xl space-y-20 px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+        <MenuSection eyebrow="morning under the palms" icon={Sun} items={dayItems} isNight={isNight} />
+        <MenuSection eyebrow="earth and fire dinners" icon={Flame} items={nightItems} isNight={isNight} />
 
-      {/* GLOBAL BRAND FOOTER CONSOLE & AMBIENT SOUND CONTROLLER */}
-      <footer className={`mt-auto px-6 py-8 border-t transition-colors duration-500 ${
-        isNight ? 'bg-black/40 border-amber-900/20 text-[#F4EBE1]/60' : 'bg-[#EAE1D5]/40 border-[#2D4A3E]/10 text-[#2D4A3E]/70'
-      }`}>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs">
-          
-          {/* Ambient Soundscape Controller Component */}
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setIsPlayingSound(!isPlayingSound)}
-              className={`p-2.5 rounded-full border transition-all duration-300 ${
-                isPlayingSound 
-                  ? 'bg-amber-600 text-white border-amber-500' 
-                  : 'border-current opacity-60 hover:opacity-100'
-              }`}
-            >
-              {isPlayingSound ? (
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                </svg>
-              ) : (
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-              )}
-            </button>
-            <div className="flex flex-col">
-              <span className="font-semibold tracking-wider lowercase">listen to the oasis right now</span>
-              <span className="text-[10px] opacity-60">
-                {isPlayingSound ? "Playing: Wind through palms, crackling crackles & faint guitar strings" : "Soundscape muted"}
-              </span>
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-stretch">
+          <div className="relative min-h-[26rem] overflow-hidden rounded-[2.8rem_1.1rem_3.7rem_1.6rem]">
+            <img src={counterImage} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A1118]/70 via-[#0A1118]/10 to-transparent" />
+            <div className="absolute bottom-6 left-6 right-6 text-[#F4EBE1]">
+              <p className="mb-2 text-[0.64rem] font-bold uppercase tracking-[0.3em] text-[#D97706]">
+                Direct counter request
+              </p>
+              <h2 className="font-serif text-4xl lowercase leading-tight">want your tea ready when you walk in?</h2>
             </div>
-            
-            {/* Soft Simulated SVG Waveform animation */}
-            {isPlayingSound && (
-              <div className="flex items-end gap-0.5 h-4 ml-2">
-                <div className="w-[2px] bg-amber-500 animate-[bounce_1s_infinite_100ms]" style={{height: '60%'}}></div>
-                <div className="w-[2px] bg-amber-500 animate-[bounce_1s_infinite_300ms]" style={{height: '100%'}}></div>
-                <div className="w-[2px] bg-amber-500 animate-[bounce_1s_infinite_200ms]" style={{height: '40%'}}></div>
-                <div className="w-[2px] bg-amber-500 animate-[bounce_1s_infinite_400ms]" style={{height: '80%'}}></div>
-              </div>
-            )}
           </div>
 
-          {/* Telemetry Sensor Logs */}
-          <div className="flex items-center gap-6 tracking-widest text-[10px] uppercase">
-            <div>
-              <span className="opacity-50 mr-1">Location:</span> Dahab, Egypt
+          <div
+            className={`flex flex-col justify-center rounded-[1.4rem_3rem_1.8rem_2.2rem] border p-7 md:p-10 ${
+              isNight
+                ? 'border-[#D97706]/22 bg-[#121A23] shadow-[0_28px_80px_rgba(0,0,0,0.28)]'
+                : 'border-[#2D4A3E]/12 bg-[#EAE1D5]/80 shadow-[0_18px_60px_rgba(45,74,62,0.08)]'
+            }`}
+          >
+            <div className="mb-7 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-[1rem_0.55rem_1.2rem_0.75rem] bg-[#D97706] text-[#0A1118]">
+                <MessageCircle className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.3em] opacity-60">
+                  WhatsApp kitchen line
+                </p>
+                <p className="mt-1 text-sm opacity-75">Write the items, timing, and guest count.</p>
+              </div>
             </div>
+
+            <form onSubmit={handleWhatsappSubmit} className="space-y-4">
+              <label htmlFor="menu-order-request" className="sr-only">
+                Kitchen request
+              </label>
+              <div
+                className={`flex items-center gap-3 rounded-[1.4rem_0.8rem_1.8rem_1rem] border px-4 ${
+                  isNight ? 'border-[#F4EBE1]/12 bg-[#0A1118]/60' : 'border-[#2D4A3E]/14 bg-[#F4EBE1]/80'
+                }`}
+              >
+                <Search className="h-4 w-4 opacity-45" aria-hidden="true" />
+                <input
+                  id="menu-order-request"
+                  type="text"
+                  value={orderRequest}
+                  onChange={(event) => setOrderRequest(event.target.value)}
+                  placeholder="2 campfire teas and a sunrise platter at 7:30..."
+                  className="min-h-14 w-full bg-transparent text-sm outline-none placeholder:text-current placeholder:opacity-45"
+                />
+              </div>
+              <button
+                type="submit"
+                className={`inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-[1.4rem_0.8rem_1.8rem_1rem] px-5 py-3 text-xs font-bold uppercase tracking-[0.24em] transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D97706] sm:w-auto ${
+                  isNight
+                    ? 'bg-[#D97706] text-[#0A1118] hover:bg-[#F4EBE1]'
+                    : 'bg-[#2D4A3E] text-[#F4EBE1] hover:bg-[#D97706] hover:text-[#0A1118]'
+                }`}
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                Send request
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section aria-labelledby="social-proof-heading">
+          <div className="mb-7 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <span className="opacity-50 mr-1">Local Time:</span> {dahabTime || "00:00:00 AM"}
+              <p
+                className={`mb-3 inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.3em] ${
+                  isNight ? 'text-[#D97706]' : 'text-[#2D4A3E]/60'
+                }`}
+              >
+                <Camera className="h-4 w-4" aria-hidden="true" />
+                Visitor atmosphere
+              </p>
+              <h2 id="social-proof-heading" className="font-serif text-4xl lowercase leading-tight md:text-5xl">
+                a real courtyard, not a stock moodboard
+              </h2>
             </div>
+            <p className="max-w-md text-sm leading-7 opacity-70">
+              The menu experience uses venue imagery from the supplied Google Maps capture set to make
+              the food journey feel physically grounded.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {socialPhotos.map((photo) => (
+              <figure
+                key={photo.label}
+                className="relative aspect-[4/3] overflow-hidden rounded-[1.8rem_0.9rem_2.4rem_1.2rem]"
+              >
+                <img src={photo.src} alt={photo.label} loading="lazy" className="h-full w-full object-cover" />
+                <figcaption className="absolute bottom-4 left-4 right-4 rounded-[1rem_0.6rem_1.2rem_0.8rem] bg-[#0A1118]/55 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-[#F4EBE1] backdrop-blur-md">
+                  {photo.label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <button
+        type="button"
+        onClick={() => setShowCampfireModal(true)}
+        className="fixed bottom-6 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-[1.4rem_0.75rem_1.8rem_1rem] bg-[#D97706] text-[#0A1118] shadow-[0_0_34px_rgba(217,119,6,0.45)] transition hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F4EBE1] md:bottom-8 md:right-8"
+        aria-label="Open the virtual campfire story"
+      >
+        <Flame className="h-6 w-6" aria-hidden="true" />
+      </button>
+
+      <footer
+        className={`border-t px-5 py-6 transition-colors sm:px-8 lg:px-12 ${
+          isNight
+            ? 'border-[#F4EBE1]/10 bg-[#0A1118] text-[#F4EBE1]/70'
+            : 'border-[#2D4A3E]/10 bg-[#EAE1D5]/55 text-[#2D4A3E]/75'
+        }`}
+      >
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <button
+            type="button"
+            onClick={() => setIsPlayingSound((current) => !current)}
+            className={`inline-flex items-center gap-4 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D97706] ${
+              isPlayingSound ? 'opacity-100' : 'opacity-78 hover:opacity-100'
+            }`}
+            aria-pressed={isPlayingSound}
+          >
+            <span
+              className={`flex h-11 w-11 items-center justify-center rounded-[1rem_0.55rem_1.25rem_0.75rem] border ${
+                isPlayingSound
+                  ? 'border-[#D97706] bg-[#D97706] text-[#0A1118]'
+                  : isNight
+                    ? 'border-[#F4EBE1]/18'
+                    : 'border-[#2D4A3E]/20'
+              }`}
+            >
+              {isPlayingSound ? <Pause className="h-4 w-4" aria-hidden="true" /> : <Play className="h-4 w-4" aria-hidden="true" />}
+            </span>
+            <span>
+              <span className="flex items-center gap-2 text-[0.66rem] font-bold uppercase tracking-[0.28em]">
+                <Volume2 className="h-4 w-4" aria-hidden="true" />
+                Listen to the oasis right now
+              </span>
+              <span className="mt-1 block text-sm opacity-65">
+                {isPlayingSound ? 'Wind through palms and crackling embers' : 'Ambient layer muted'}
+              </span>
+            </span>
+          </button>
+
+          <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.2em]">
+            <span className="inline-flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-[#D97706]" aria-hidden="true" />
+              Dahab, South Sinai
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Leaf className="h-4 w-4 text-[#D97706]" aria-hidden="true" />
+              Palm grove kitchen
+            </span>
           </div>
         </div>
       </footer>
 
-      {/* EDITORIAL VIRTUAL CAMPFIRE POP-UP OVERLAY */}
       {showCampfireModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-500">
-          <div className="bg-[#0A1118] text-[#F4EBE1] border border-amber-600/30 max-w-lg w-full p-8 md:p-10 relative rounded-[3rem_1rem_4rem_2rem] shadow-2xl shadow-amber-900/30">
-            <button 
-              onClick={() => setShowCampfireModal(false)}
-              className="absolute top-6 right-6 text-sm text-amber-500 hover:text-white uppercase tracking-widest"
-            >
-              [ close ]
-            </button>
-            
-            <span className="text-[10px] tracking-[0.4em] uppercase text-amber-500 block mb-2">Sinai Customs</span>
-            <h3 className="font-serif text-3xl lowercase mb-6 leading-tight text-[#F4EBE1]">
-              The Sacred Ritual of Habak Tea
-            </h3>
-            <p className="text-xs leading-relaxed text-[#F4EBE1]/80 space-y-4 mb-6 tracking-wide">
-              In the deep desert, hospitality is not an option; it is a sacred custom. When a nomad walks into our courtyard grove, the campfire is struck instantly. 
-              <br /><br />
-              Habak mint is found only hidden within the high mountain rock valleys of the Sinai peninsula. It is brewed gently on low charcoal ash embers for hours alongside sweet sage to cool the blood and settle global traveler thoughts. Here, you don't buy an hours rest—you enter a shared house.
-            </p>
-            <div className="bg-amber-950/40 border border-amber-600/20 p-4 rounded-xl text-center">
-              <span className="text-[11px] italic text-amber-500 tracking-wide block">
-                "As long as there is tea over coal, there is kinship under the stars."
-              </span>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A1118]/88 p-4 backdrop-blur-xl"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="campfire-title"
+        >
+          <button
+            type="button"
+            className="absolute inset-0 cursor-default"
+            onClick={() => setShowCampfireModal(false)}
+            aria-label="Close campfire story"
+          />
+
+          <div className="relative grid max-h-[92vh] w-full max-w-4xl overflow-hidden rounded-[2.8rem_1.2rem_3.8rem_1.6rem] border border-[#D97706]/30 bg-[#0A1118] text-[#F4EBE1] shadow-[0_36px_120px_rgba(0,0,0,0.5)] md:grid-cols-[0.9fr_1.1fr]">
+            <div className="relative min-h-64">
+              <img src={teaImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A1118] via-[#0A1118]/20 to-transparent md:bg-gradient-to-r" />
+            </div>
+
+            <div className="overflow-y-auto p-7 md:p-10">
+              <button
+                type="button"
+                onClick={() => setShowCampfireModal(false)}
+                className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-[0.9rem_0.5rem_1.1rem_0.7rem] border border-[#F4EBE1]/12 bg-[#0A1118]/60 text-[#F4EBE1] transition hover:border-[#D97706] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D97706]"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" aria-hidden="true" />
+              </button>
+
+              <p className="mb-4 text-[0.65rem] font-bold uppercase tracking-[0.34em] text-[#D97706]">
+                Sinai hospitality
+              </p>
+              <h2 id="campfire-title" className="font-serif text-4xl lowercase leading-tight">
+                the ritual begins before the first cup
+              </h2>
+              <p className="mt-6 text-sm leading-8 text-[#F4EBE1]/78">
+                At Nakhyl Zone, tea is the welcome signal. Habak mint, sage, coal heat, and slow
+                conversation turn the courtyard into a shared house for travelers, locals, families,
+                and musicians moving through Dahab.
+              </p>
+              <div className="mt-8 border-l-2 border-[#D97706] pl-5">
+                <p className="font-serif text-2xl lowercase leading-snug text-[#D97706]">
+                  fire first, service second, community always.
+                </p>
+              </div>
             </div>
           </div>
         </div>

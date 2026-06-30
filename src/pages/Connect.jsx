@@ -1,507 +1,530 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ArrowRight,
+  CalendarDays,
+  Check,
+  Flame,
+  Headphones,
+  Mail,
+  MapPin,
+  Moon,
+  Pause,
+  Phone,
+  Play,
+  Send,
+  ShieldCheck,
+  Sun,
+  Users,
+  Wifi,
+  X,
+} from 'lucide-react';
 
-export default function NomadBookingEngine() {
-  // Global Theme State: true = Night (🌙 Follow the Sparks), false = Day (☀️ Chase the Sun)
-  const [isNight, setIsNight] = useState(true);
+const courtyardImage = new URL('../../identity/Nakhyl-zone-8.jpeg', import.meta.url).href;
+const entranceImage = new URL('../../identity/Nakhyl-zone-12.jpeg', import.meta.url).href;
+const fireImage = new URL('../../identity/Nakhyl-zone-5.jpeg', import.meta.url).href;
+const loungeImage = new URL('../../identity/Nakhyl-zone-1.jpeg', import.meta.url).href;
+const cinemaImage = new URL('../../identity/Nakhyl-zone-14.jpeg', import.meta.url).href;
+const palmImage = new URL('../../identity/Nakhyl-zone-20.jpeg', import.meta.url).href;
 
-  // Form State
+const PURPOSES = [
+  {
+    id: 'Coworking Day',
+    label: 'Coworking day',
+    detail: 'Quiet tables, shade, power, and a calm first landing.',
+    icon: Wifi,
+  },
+  {
+    id: 'Attend Cinema',
+    label: 'Cinema Wadi',
+    detail: 'Reserved cushions for open-air film nights.',
+    icon: CalendarDays,
+  },
+  {
+    id: 'Drop in for Dinner',
+    label: 'Dinner visit',
+    detail: 'Slow food, Habak tea, and floor-level seating.',
+    icon: Users,
+  },
+  {
+    id: 'Host Private Event',
+    label: 'Private event',
+    detail: 'Venue buy-out, retreat, workshop, or cultural gathering.',
+    icon: ShieldCheck,
+  },
+];
+
+const CONTACT_METHODS = [
+  { id: 'whatsapp', label: 'WhatsApp', icon: Phone },
+  { id: 'email', label: 'Email', icon: Mail },
+];
+
+const SOCIAL_IMAGES = [entranceImage, loungeImage, cinemaImage, palmImage];
+
+const cx = (...classes) => classes.filter(Boolean).join(' ');
+
+export default function Connect() {
+  const [isNight, setIsNight] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isCampfireOpen, setIsCampfireOpen] = useState(false);
+  const [dahabTime, setDahabTime] = useState('');
   const [formData, setFormData] = useState({
-    purpose: 'Coworking Day', // Default active pill
+    purpose: 'Coworking Day',
     fullName: '',
-    emailOrWhatsapp: '',
+    contactMethod: 'whatsapp',
+    contactValue: '',
     arrivalDate: '',
-    guestCount: '1 Nomad',
-    isPrivateRetreat: false,
+    guestCount: '1 guest',
     retreatDetails: '',
-    specialVibeNotes: ''
+    notes: '',
   });
 
-  // State for Virtual Campfire Overlay
-  const [showCampfire, setShowCampfire] = useState(false);
+  useEffect(() => {
+    const updateClock = () => {
+      setDahabTime(
+        new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Africa/Cairo',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }).format(new Date()),
+      );
+    };
 
-  // State for Ambient Soundscape
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+    updateClock();
+    const interval = window.setInterval(updateClock, 30000);
+    return () => window.clearInterval(interval);
+  }, []);
 
-  // Purpose Selection Options
-  const connectionPurposes = [
-    { id: 'Coworking Day', label: 'Coworking / Nomad Day' },
-    { id: 'Attend Cinema', label: 'Attend Cinema Night' },
-    { id: 'Drop in for Dinner', label: 'Drop in for Dinner' },
-    { id: 'Host Private Event', label: 'Host Private Cultural Event' }
-  ];
+  const palette = useMemo(
+    () => ({
+      page: isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]',
+      panel: isNight ? 'border-[#F4EBE1]/12 bg-[#101922]/88' : 'border-[#2D4A3E]/14 bg-white/50',
+      panelSolid: isNight ? 'border-[#F4EBE1]/12 bg-[#111B24]' : 'border-[#2D4A3E]/14 bg-[#EEE3D7]',
+      inset: isNight ? 'border-[#F4EBE1]/10 bg-[#F4EBE1]/[0.035]' : 'border-[#2D4A3E]/10 bg-[#2D4A3E]/[0.035]',
+      muted: isNight ? 'text-[#F4EBE1]/68' : 'text-[#2D4A3E]/68',
+      hairline: isNight ? 'border-[#F4EBE1]/12' : 'border-[#2D4A3E]/12',
+      heroOverlay: isNight
+        ? 'bg-[linear-gradient(90deg,rgba(10,17,24,0.96)_0%,rgba(10,17,24,0.78)_48%,rgba(10,17,24,0.18)_100%)]'
+        : 'bg-[linear-gradient(90deg,rgba(244,235,225,0.98)_0%,rgba(244,235,225,0.78)_48%,rgba(244,235,225,0.14)_100%)]',
+      input:
+        'border-current/15 bg-transparent placeholder:text-current/35 focus:border-[#D97706] focus:outline-none focus:ring-2 focus:ring-[#D97706]/20',
+    }),
+    [isNight],
+  );
+
+  const selectedPurpose = PURPOSES.find((purpose) => purpose.id === formData.purpose) || PURPOSES[0];
+  const isPrivateEvent = formData.purpose === 'Host Private Event';
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
+  };
 
   const handlePurposeChange = (purposeId) => {
-    setFormData(prev => ({
-      ...prev,
+    setFormData((current) => ({
+      ...current,
       purpose: purposeId,
-      isPrivateRetreat: purposeId === 'Host Private Event' ? true : prev.isPrivateRetreat
+      retreatDetails: purposeId === 'Host Private Event' ? current.retreatDetails : '',
     }));
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  // Section 4: WhatsApp Formatting & Dispatch Wire
-  const handleDispatchWire = (e) => {
-    e.preventDefault();
-    
-    const message = `*🌴 Nakhyl Zone Dahab - Booking & Wire Dispatch * \n\n` +
-                    `• *Intent:* ${formData.purpose}\n` +
-                    `• *Nomad Name:* ${formData.fullName || 'Not specified'}\n` +
-                    `• *Secure Channel:* ${formData.emailOrWhatsapp || 'Not specified'}\n` +
-                    `• *Arrival Coordinates:* ${formData.arrivalDate || 'Not specified'}\n` +
-                    `• *Gathering Size:* ${formData.guestCount}\n` +
-                    `• *Private Retreat Intent:* ${formData.isPrivateRetreat ? 'Yes' : 'No'}\n` +
-                    (formData.isPrivateRetreat ? `• *Retreat Scope:* ${formData.retreatDetails}\n` : '') +
-                    `• *Aura/Vibe Notes:* ${formData.specialVibeNotes || 'None'}`;
-    
-    const encodedMessage = encodeURIComponent(message);
-    // Real operational WhatsApp API window hook
-    window.open(`https://api.whatsapp.com/send?phone=201000000000&text=${encodedMessage}`, '_blank');
+    const message = encodeURIComponent(
+      [
+        'Marhaba Nakhyl Zone.',
+        '',
+        `Visit intent: ${formData.purpose}`,
+        `Name: ${formData.fullName || 'Not specified'}`,
+        `Preferred contact: ${formData.contactMethod} - ${formData.contactValue || 'Not specified'}`,
+        `Arrival date: ${formData.arrivalDate || 'Flexible'}`,
+        `Group size: ${formData.guestCount}`,
+        isPrivateEvent ? `Private event scope: ${formData.retreatDetails || 'To be discussed'}` : null,
+        `Notes: ${formData.notes || 'None'}`,
+      ]
+        .filter(Boolean)
+        .join('\n'),
+    );
+
+    window.open(`https://api.whatsapp.com/send?phone=201000000000&text=${message}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
-    <div 
-      className={`min-h-screen w-full font-sans transition-colors duration-1000 ${
-        isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]'
-      }`}
-      style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
-    >
-      {/* GLOBAL BACKGROUND SYSTEM STYLES (FONTS SIMULATED) */}
+    <main className={cx('min-h-screen overflow-hidden font-sans antialiased transition-colors duration-700', palette.page)}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap');
-        .serif-editorial { font-family: 'Cormorant Garamond', serif; }
-        .monospace-input { font-family: 'JetBrains Mono', monospace; }
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        .font-sans { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; }
+        .font-serif { font-family: 'Cormorant Garamond', Georgia, serif; }
       `}</style>
 
-   
-      {/* HERO / INTRO OVERVIEW STATEMENT */}
-      <section className="max-w-4xl mx-auto px-6 pt-16 pb-8 text-center">
-        <span className="text-[11px] uppercase tracking-[0.4em] block mb-3 opacity-70">
-          {isNight ? '🌙 follow the sparks' : '☀️ chase the sun'}
-        </span>
-        <h1 className="serif-editorial text-4xl md:text-6xl font-light leading-tight lowercase mb-6">
-          escape the noise. <br />
-          <span className="italic">connect with the rhythm of the oasis.</span>
-        </h1>
-        <p className="max-w-xl mx-auto text-sm tracking-wide opacity-80 font-light leading-relaxed">
-          Tucked safely inside Dahab's stone streets lies a physical shelter for digital creators, 
-          storytellers, and slow-travelers. Secure your space around our fire pit or under the shade of our palms.
-        </p>
-      </section>
-
-      {/* MAIN LAYOUT WRAPPER FOR SECTIONS 1, 2 & 3 */}
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        
-        {/* LEFT COMPARTMENT: BOOKING LOGIC & Retrears (8 COLS) */}
-        <div className="lg:col-span-7 space-y-12">
-          
-          {/* SECTION 1: MONOSPACE CONNECTION FORM */}
-          <section 
-            className={`p-6 md:p-10 transition-all duration-700 shadow-xl border ${
-              isNight 
-                ? 'bg-[#0E1822] border-gray-800 rounded-[2.5rem_1.2rem_4rem_2rem]' 
-                : 'bg-[#FCF9F5] border-[rgba(45,74,62,0.1)] rounded-[3rem_1.5rem_2.5rem_2rem]'
-            }`}
-          >
-            <div className="flex items-center space-x-3 mb-6 border-b pb-4"
-                 style={{ borderColor: isNight ? 'rgba(244,235,225,0.08)' : 'rgba(45,74,62,0.08)' }}>
-              <span className="monospace-input text-xs uppercase tracking-widest text-amber-600 font-bold">[01 // connection engine]</span>
-            </div>
-
-            <form onSubmit={handleDispatchWire} className="space-y-8">
-              
-              {/* Interactive Pill Badges Layer instead of generic select items */}
-              <div>
-                <label className="block text-xs uppercase tracking-[0.2em] mb-4 opacity-70 font-semibold">
-                  Select your current ritual focus:
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {connectionPurposes.map((pill) => {
-                    const isActive = formData.purpose === pill.id;
-                    return (
-                      <button
-                        key={pill.id}
-                        type="button"
-                        onClick={() => handlePurposeChange(pill.id)}
-                        className={`px-4 py-2.5 rounded-[1rem_0.5rem_1.2rem_0.6rem] text-xs tracking-wider transition-all duration-300 border font-medium ${
-                          isActive
-                            ? isNight
-                              ? 'bg-[#D97706] text-[#0A1118] border-[#D97706] scale-102 shadow-md shadow-amber-900/20'
-                              : 'bg-[#2D4A3E] text-[#F4EBE1] border-[#2D4A3E] scale-102 shadow-md shadow-emerald-900/10'
-                            : isNight
-                              ? 'bg-[#13202C] text-[#F4EBE1]/60 border-gray-800 hover:text-white hover:border-gray-600'
-                              : 'bg-[#F4EBE1] text-[#2D4A3E]/70 border-stone-300 hover:text-[#2D4A3E] hover:border-stone-400'
-                        }`}
-                      >
-                        {isActive && <span className="mr-1.5">✓</span>}
-                        {pill.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Conversational Typewriter Monospace Fields */}
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="block text-[11px] uppercase tracking-widest opacity-70">Nomad Identifier (Full Name)</label>
-                    <input 
-                      type="text" 
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleInputChange}
-                      placeholder="e.g., amara lin"
-                      required
-                      className="w-full monospace-input text-sm bg-transparent border-b py-2 focus:outline-none transition-all"
-                      style={{ 
-                        borderColor: isNight ? 'rgba(244,235,225,0.2)' : 'rgba(45,74,62,0.2)',
-                        color: isNight ? '#F4EBE1' : '#2D4A3E'
-                      }}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-[11px] uppercase tracking-widest opacity-70">Secure Contact Channel (WhatsApp or Email)</label>
-                    <input 
-                      type="text" 
-                      name="emailOrWhatsapp"
-                      value={formData.emailOrWhatsapp}
-                      onChange={handleInputChange}
-                      placeholder="e.g., +447123456789"
-                      required
-                      className="w-full monospace-input text-sm bg-transparent border-b py-2 focus:outline-none transition-all"
-                      style={{ 
-                        borderColor: isNight ? 'rgba(244,235,225,0.2)' : 'rgba(45,74,62,0.2)'
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="block text-[11px] uppercase tracking-widest opacity-70">Arrival Coordinate (Date)</label>
-                    <input 
-                      type="date" 
-                      name="arrivalDate"
-                      value={formData.arrivalDate}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full monospace-input text-sm bg-transparent border-b py-2 focus:outline-none transition-all opacity-80"
-                      style={{ 
-                        borderColor: isNight ? 'rgba(244,235,225,0.2)' : 'rgba(45,74,62,0.2)',
-                        colorScheme: isNight ? 'dark' : 'light'
-                      }}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-[11px] uppercase tracking-widest opacity-70">Gathering Size (People Count)</label>
-                    <select
-                      name="guestCount"
-                      value={formData.guestCount}
-                      onChange={handleInputChange}
-                      className="w-full monospace-input text-sm bg-transparent border-b py-2 focus:outline-none transition-all"
-                      style={{ 
-                        borderColor: isNight ? 'rgba(244,235,225,0.2)' : 'rgba(45,74,62,0.2)'
-                      }}
-                    >
-                      <option value="1 Nomad" className={isNight ? 'bg-[#0A1118]' : 'bg-[#F4EBE1]'}>1 Nomad / Solivagant</option>
-                      <option value="2 Gathering" className={isNight ? 'bg-[#0A1118]' : 'bg-[#F4EBE1]'}>2 Partners in Space</option>
-                      <option value="3-5 Creative Crew" className={isNight ? 'bg-[#0A1118]' : 'bg-[#F4EBE1]'}>3-5 Small Creative Crew</option>
-                      <option value="6+ Tribe Network" className={isNight ? 'bg-[#0A1118]' : 'bg-[#F4EBE1]'}>6+ Tribe Network (Retreat Core)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-[11px] uppercase tracking-widest opacity-70">Aura / Special Vibe Notes (Dietary, Seating preference, or Music setups)</label>
-                  <textarea 
-                    name="specialVibeNotes"
-                    value={formData.specialVibeNotes}
-                    onChange={handleInputChange}
-                    placeholder="Tell our local crew what your mind requires... open campfire seating, low rugs, dark cinema corner..."
-                    rows="2"
-                    className="w-full text-xs tracking-wide bg-transparent border-b py-2 focus:outline-none transition-all"
-                    style={{ 
-                      borderColor: isNight ? 'rgba(244,235,225,0.2)' : 'rgba(45,74,62,0.2)'
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* SECTION 4: INSTANT WIRE DISPATCH SUBMIT BUTTON */}
-              <div className="pt-4">
-                <button
-                  type="submit"
-                  className={`w-full group font-medium text-xs tracking-[0.25em] uppercase py-4 px-6 transition-all duration-500 flex items-center justify-center space-x-3 rounded-[1.5rem_0.8rem_2rem_1rem] ${
-                    isNight 
-                      ? 'bg-[#D97706] text-[#0A1118] hover:bg-amber-500 shadow-lg shadow-amber-900/30' 
-                      : 'bg-[#2D4A3E] text-[#F4EBE1] hover:bg-[#3D6454] shadow-lg shadow-emerald-950/20'
-                  }`}
-                >
-                  <span>🚀 dispatch secure wire via whatsapp</span>
-                  <span className="transform group-hover:translate-x-2 transition-transform duration-300">➔</span>
-                </button>
-                <div className="text-center mt-3">
-                  <span className="text-[10px] opacity-50 tracking-widest uppercase">
-                    🔒 encrypted client side. direct line to crew desk.
-                  </span>
-                </div>
-              </div>
-            </form>
-          </section>
-
-          {/* SECTION 3: THE PRIVATE RETREAT INTAKE */}
-          <section 
-            className={`p-6 md:p-10 transition-all duration-700 border relative overflow-hidden ${
-              isNight 
-                ? 'bg-gradient-to-br from-[#0F1C28] to-[#0A1118] border-amber-900/40 rounded-[1.5rem_3rem_1.2rem_4rem]' 
-                : 'bg-gradient-to-br from-[#FAF5EF] to-[#F4EBE1] border-[rgba(45,74,62,0.15)] rounded-[2rem_2.5rem_4rem_1.5rem]'
-            }`}
-          >
-            {/* Soft Ambient Spark Blur Ring background */}
-            <div className={`absolute -right-16 -bottom-16 w-44 h-44 rounded-full filter blur-3xl opacity-20 pointer-events-none transition-colors duration-1000 ${
-              isNight ? 'bg-amber-500' : 'bg-emerald-600'
-            }`} />
-
-            <div className="flex items-center space-x-2 mb-4">
-              <span className="monospace-input text-xs uppercase tracking-widest text-amber-600 font-bold">[03 // tailored sanctuary workshops]</span>
-            </div>
-
-            <h3 className="serif-editorial text-2xl lowercase mb-4">
-              corporate escape, brand incubation & private tribal retreats
-            </h3>
-            
-            <p className="text-xs font-light tracking-wide leading-relaxed mb-6 opacity-80">
-              Need to block out our acoustic soundscape, natural palm groves, and fireside circles exclusively for your tech squad, wellness tribe, or creative agency design sprint? We customize the spaces, deploy private Bedouin slow-cooked dining matrices, and establish a quiet enclave.
-            </p>
-
-            <div className="space-y-4 bg-opacity-30 p-4 rounded-xl" style={{ backgroundColor: isNight ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.4)' }}>
-              <label className="flex items-start space-x-3 cursor-pointer select-none">
-                <input 
-                  type="checkbox"
-                  name="isPrivateRetreat"
-                  checked={formData.isPrivateRetreat}
-                  onChange={handleInputChange}
-                  className="mt-1 accent-amber-600 rounded"
-                />
-                <span className="text-xs tracking-wide font-medium">
-                  Flag this wire dispatch for exclusive venue buy-out / enterprise exploration
-                </span>
-              </label>
-
-              {formData.isPrivateRetreat && (
-                <div className="pt-2 animate-fadeIn">
-                  <label className="block text-[10px] uppercase tracking-widest mb-1 opacity-70">Retreat Parameters & Scale Required:</label>
-                  <textarea
-                    name="retreatDetails"
-                    value={formData.retreatDetails}
-                    onChange={handleInputChange}
-                    placeholder="Provide estimated count of global nomads, dynamic duration (days), and audio/video requirements for 'Cinema Wadi' projection uses..."
-                    rows="3"
-                    className="w-full text-xs tracking-wide bg-transparent border rounded p-2 focus:outline-none"
-                    style={{ borderColor: isNight ? 'rgba(244,235,225,0.15)' : 'rgba(45,74,62,0.15)' }}
-                  />
-                </div>
-              )}
-            </div>
-          </section>
-
-        </div>
-
-        {/* RIGHT COMPARTMENT: COORDINATES MAP & SOCIALS (5 COLS) */}
-        <div className="lg:col-span-5 space-y-8">
-          
-          {/* SECTION 2: DESATURATED SPATIAL COORDINATES MAP */}
-          <section 
-            className={`p-6 border transition-all duration-700 shadow-md ${
-              isNight 
-                ? 'bg-[#0E1822] border-gray-800 rounded-[2rem_3rem_1.5rem_3.5rem]' 
-                : 'bg-[#FCF9F5] border-[rgba(45,74,62,0.1)] rounded-[3rem_2rem_3.5rem_1.2rem]'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-4 pb-2 border-b"
-                 style={{ borderColor: isNight ? 'rgba(244,235,225,0.08)' : 'rgba(45,74,62,0.08)' }}>
-              <span className="monospace-input text-xs uppercase tracking-widest text-amber-600 font-bold">[02 // geographical vector]</span>
-              <span className="text-[10px] tracking-widest uppercase opacity-60">28.5105° N, 34.5126° E</span>
-            </div>
-
-            <p className="text-xs font-light tracking-wide leading-relaxed mb-4 opacity-80">
-              We reject high-traffic neon corridors. Nakhyl Zone is quietly nestled right behind the local heart grids of Dahab City—accessible on foot, insulated perfectly by authentic hand-molded clay structures.
-            </p>
-
-            {/* Simulated Custom Desaturated High-End Structural Map Element */}
-            <div 
-              className={`w-full h-64 relative overflow-hidden flex flex-col justify-between p-4 border transition-colors duration-700 shadow-inner rounded-[1.8rem_1rem_2.5rem_1.5rem] ${
-                isNight ? 'bg-[#121A23] border-gray-800' : 'bg-[#EFE7DD] border-stone-300'
-              }`}
-            >
-              {/* Absctract Stylized Topographic Vectors (Simulated via SVG Gridlines) */}
-              <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-                    <path d="M 30 0 L 0 0 0 30" fill="none" stroke={isNight ? '#F4EBE1' : '#2D4A3E'} strokeWidth="1"/>
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-                <circle cx="150" cy="120" r="70" fill="none" stroke={isNight ? '#F4EBE1' : '#2D4A3E'} strokeWidth="1" strokeDasharray="4"/>
-              </svg>
-
-              {/* Map Accent Markers */}
-              <div className="relative z-10 flex justify-between items-start">
-                <span className="text-[9px] px-2 py-0.5 rounded backdrop-blur-md uppercase bg-black/20 text-[#F4EBE1]/70">Sinai Coastal Route</span>
-                <span className="text-[9px] px-2 py-0.5 rounded backdrop-blur-md uppercase bg-black/20 text-[#F4EBE1]/70">Red Sea Shoreline</span>
-              </div>
-
-              {/* The Pulse Hub Indicator (Nakhyl Zone Anchor) */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-10">
-                <div className="relative flex items-center justify-center">
-                  <span className="animate-ping absolute inline-flex h-12 w-12 rounded-full opacity-40" style={{ backgroundColor: isNight ? '#D97706' : '#2D4A3E' }}></span>
-                  <div className="relative rounded-full p-3 shadow-lg border text-xs"
-                       style={{ 
-                         backgroundColor: isNight ? '#0A1118' : '#F4EBE1', 
-                         borderColor: isNight ? '#D97706' : '#2D4A3E'
-                       }}>
-                    🌴
-                  </div>
-                </div>
-                <span className="text-[10px] tracking-widest font-bold uppercase mt-2 block backdrop-blur-sm px-2 py-0.5 rounded">
-                  nakhyl sanctuary
-                </span>
-              </div>
-
-              <div className="relative z-10 flex justify-between items-end pt-32">
-                <span className="text-[9px] uppercase tracking-wide opacity-60">← Dahab Lighthouse (7 Mins walk)</span>
-                <a 
-                  href="https://maps.google.com" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="text-[10px] font-bold uppercase underline tracking-wider hover:text-amber-500 transition-colors"
-                >
-                  open maps system ↗
-                </a>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3 text-center">
-              <div className="p-3 border rounded-xl" style={{ borderColor: isNight ? 'rgba(244,235,225,0.06)' : 'rgba(45,74,62,0.06)' }}>
-                <span className="block text-lg font-light">3 min</span>
-                <span className="text-[9px] uppercase tracking-widest opacity-60">From Asalah Square</span>
-              </div>
-              <div className="p-3 border rounded-xl" style={{ borderColor: isNight ? 'rgba(244,235,225,0.06)' : 'rgba(45,74,62,0.06)' }}>
-                <span className="block text-lg font-light">Fiber opt</span>
-                <span className="text-[9px] uppercase tracking-widest opacity-60">Nomad Mesh Network</span>
-              </div>
-            </div>
-          </section>
-
-          {/* SOCIAL PROOF ACCENT ELEMENT */}
-          <section className={`p-6 border ${isNight ? 'bg-[#0E1822]/50 border-gray-800' : 'bg-[#FCF9F5]/50 border-stone-200'} rounded-[2rem] text-center`}>
-            <span className="text-[9px] tracking-[0.3em] uppercase block mb-3 opacity-60">🔴 Live Community Resonance Feed</span>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="aspect-square bg-stone-600/20 rounded-lg flex items-center justify-center text-xs opacity-70 hover:opacity-100 transition-opacity">✨ rugs</div>
-              <div className="aspect-square bg-stone-600/20 rounded-lg flex items-center justify-center text-xs opacity-70 hover:opacity-100 transition-opacity">🔥 jams</div>
-              <div className="aspect-square bg-stone-600/20 rounded-lg flex items-center justify-center text-xs opacity-70 hover:opacity-100 transition-opacity">🎬 wadi</div>
-            </div>
-            <span className="text-[10px] opacity-50 block mt-2 tracking-wide font-mono">tag @nakhylzone to bind your stream</span>
-          </section>
-
-        </div>
-      </main>
-
-      {/* AMBIENT SOUNDSCAPE CONTROLLER FOOTER */}
-      <footer 
-        className="mt-20 border-t w-full transition-colors duration-500"
-        style={{ 
-          borderColor: isNight ? 'rgba(244, 235, 225, 0.08)' : 'rgba(45, 74, 62, 0.08)',
-          backgroundColor: isNight ? '#070D13' : '#EFE7DD' 
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <div className="flex items-center space-x-4">
-            {/* Audio Micro Interaction Animation Waveform toggle block */}
-            <button 
-              onClick={() => setIsAudioPlaying(!isAudioPlaying)}
-              className="w-12 h-12 rounded-full flex items-center justify-center border transition-all hover:scale-105"
-              style={{ 
-                borderColor: isNight ? '#D97706' : '#2D4A3E',
-                backgroundColor: isAudioPlaying ? (isNight ? '#D97706' : '#2D4A3E') : 'transparent'
-              }}
-            >
-              {isAudioPlaying ? (
-                <div className="flex space-x-1 items-center justify-center h-4">
-                  <div className={`w-0.5 bg-current animate-bounce h-3`} style={{ animationDelay: '0.1s' }} />
-                  <div className={`w-0.5 bg-current animate-bounce h-4`} style={{ animationDelay: '0.3s' }} />
-                  <div className={`w-0.5 bg-current animate-bounce h-2`} style={{ animationDelay: '0.5s' }} />
-                </div>
-              ) : (
-                <span className={isNight ? 'text-[#D97706]' : 'text-[#2D4A3E]'}>▶</span>
-              )}
-            </button>
-            
-            <div>
-              <span className="text-xs font-semibold tracking-wider block uppercase">Listen to the Oasis right now</span>
-              <span className="text-[11px] opacity-60 font-light block">
-                {isAudioPlaying ? 'Playing: Wind through Palms, Campfire Crackles, Faint Oud Loop' : 'Soundscape offline • Click to teleport to Dahab'}
+      <section className="relative border-b border-current/10">
+        <img
+          src={courtyardImage}
+          alt="Nakhyl Zone courtyard with palms and shaded seating in Dahab"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="eager"
+        />
+        <div className={cx('absolute inset-0', palette.heroOverlay)} />
+        <div className="relative z-10 mx-auto grid min-h-[34rem] max-w-7xl grid-cols-1 gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.48fr)] lg:px-10 lg:py-20">
+          <div className="flex max-w-3xl flex-col justify-center">
+            <div className="mb-7 flex flex-wrap items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em]">
+              <span className="rounded-full border border-current/15 bg-current/[0.05] px-4 py-2 backdrop-blur-md">
+                connect with the oasis
+              </span>
+              <span className={cx('inline-flex items-center gap-2', palette.muted)}>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#D97706]" />
+                Dahab, Egypt
               </span>
             </div>
+
+            <h1 className="font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal sm:text-6xl lg:text-7xl">
+              plan the right kind of arrival.
+            </h1>
+            <p className={cx('mt-7 max-w-2xl text-base leading-8 tracking-wide sm:text-lg', palette.muted)}>
+              Reserve a quiet work day, dinner around low seating, Cinema Wadi cushions, or a private cultural gathering inside Nakhyl Zone's palm-lined sanctuary.
+            </p>
+
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <a
+                href="#booking-form"
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[1.4rem_0.8rem_1.8rem_1rem] bg-[#D97706] px-6 text-xs font-bold uppercase tracking-widest text-[#0A1118] shadow-[0_18px_48px_rgba(217,119,6,0.28)] transition hover:-translate-y-0.5 hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+              >
+                start request
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <button
+                type="button"
+                onClick={() => setIsCampfireOpen(true)}
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-current/15 bg-current/[0.05] px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-current/[0.1] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+              >
+                <Flame className="h-4 w-4 text-[#D97706]" aria-hidden="true" />
+                campfire story
+              </button>
+            </div>
           </div>
 
-          <div className="text-right flex flex-col items-center md:items-end space-y-1">
-            <span className="text-[10px] tracking-widest opacity-50 uppercase">Telemetry Console Matrix</span>
-            <span className="monospace-input text-[11px] tracking-tight">Dahab Time: {new Date().toLocaleTimeString('en-US', { timeZone: 'Africa/Cairo', hour: '2-digit', minute:'2-digit' })} (GMT+3)</span>
+          <aside className={cx('self-end rounded-[2.4rem_1.1rem_3rem_1.4rem] border p-4 shadow-2xl backdrop-blur-xl lg:self-center', palette.panel)}>
+            <img
+              src={entranceImage}
+              alt="Nakhyl Zone entrance with warm stone walls and yellow-framed windows"
+              className="h-72 w-full rounded-[1.8rem_0.8rem_2.5rem_1.1rem] object-cover sm:h-80"
+            />
+            <div className="grid grid-cols-3 gap-3 pt-4">
+              {[
+                ['28.5109 N', 'map point'],
+                [dahabTime || '00:00', 'dahab time'],
+                ['Mar 2026', 'venue imagery'],
+              ].map(([value, label]) => (
+                <div key={label} className={cx('rounded-[1rem_0.6rem_1.2rem_0.7rem] border p-3', palette.inset)}>
+                  <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#D97706]">{value}</p>
+                  <p className={cx('mt-1 text-[10px] uppercase tracking-[0.2em]', palette.muted)}>{label}</p>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-5 py-10 sm:px-8 lg:grid-cols-[minmax(0,0.68fr)_minmax(340px,0.32fr)] lg:px-10 lg:py-14">
+        <form
+          id="booking-form"
+          onSubmit={handleSubmit}
+          className={cx('rounded-[2.2rem_1rem_3.2rem_1.4rem] border p-5 shadow-xl backdrop-blur-xl sm:p-7 lg:p-9', palette.panel)}
+        >
+          <div className="flex flex-col gap-4 border-b border-current/10 pb-6 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D97706]">request desk</p>
+              <h2 className="mt-3 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">tell us what you need.</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsNight((value) => !value)}
+              className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-current/15 bg-current/[0.05] transition hover:bg-current/[0.1] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+              aria-label={isNight ? 'Switch to day theme' : 'Switch to night theme'}
+            >
+              {isNight ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
+            </button>
           </div>
+
+          <fieldset className="mt-7">
+            <legend className="text-xs font-bold uppercase tracking-[0.24em]">Visit intent</legend>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {PURPOSES.map((purpose) => {
+                const Icon = purpose.icon;
+                const isActive = formData.purpose === purpose.id;
+
+                return (
+                  <button
+                    key={purpose.id}
+                    type="button"
+                    onClick={() => handlePurposeChange(purpose.id)}
+                    aria-pressed={isActive}
+                    className={cx(
+                      'group min-h-28 rounded-[1.25rem_0.65rem_1.6rem_0.8rem] border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-[#D97706]',
+                      isActive ? 'border-[#D97706] bg-[#D97706] text-[#0A1118] shadow-[0_16px_36px_rgba(217,119,6,0.24)]' : cx('hover:border-[#D97706]/70 hover:bg-current/[0.06]', palette.inset),
+                    )}
+                  >
+                    <span className="flex items-start justify-between gap-3">
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-current/15 bg-current/[0.06]">
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      {isActive && <Check className="h-4 w-4" aria-hidden="true" />}
+                    </span>
+                    <span className="mt-4 block text-sm font-bold uppercase tracking-[0.18em]">{purpose.label}</span>
+                    <span className={cx('mt-2 block text-sm leading-6', isActive ? 'text-[#0A1118]/75' : palette.muted)}>{purpose.detail}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
+            <label className="block">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Full name</span>
+              <input
+                type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                placeholder="Your name"
+                required
+                autoComplete="name"
+                className={cx('mt-2 h-12 w-full rounded-[0.9rem_0.5rem_1.1rem_0.6rem] border px-4 text-sm transition', palette.input)}
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Arrival date</span>
+              <input
+                type="date"
+                name="arrivalDate"
+                value={formData.arrivalDate}
+                onChange={handleInputChange}
+                className={cx('mt-2 h-12 w-full rounded-[0.9rem_0.5rem_1.1rem_0.6rem] border px-4 text-sm transition', palette.input)}
+                style={{ colorScheme: isNight ? 'dark' : 'light' }}
+              />
+            </label>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-[0.42fr_0.58fr]">
+            <fieldset>
+              <legend className="text-[11px] font-bold uppercase tracking-[0.2em]">Reply by</legend>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {CONTACT_METHODS.map((method) => {
+                  const Icon = method.icon;
+                  const isActive = formData.contactMethod === method.id;
+
+                  return (
+                    <button
+                      key={method.id}
+                      type="button"
+                      onClick={() => setFormData((current) => ({ ...current, contactMethod: method.id }))}
+                      className={cx(
+                        'inline-flex h-12 items-center justify-center gap-2 rounded-[0.9rem_0.5rem_1.1rem_0.6rem] border text-xs font-bold uppercase tracking-widest transition focus:outline-none focus:ring-2 focus:ring-[#D97706]',
+                        isActive ? 'border-[#D97706] bg-[#D97706] text-[#0A1118]' : cx('hover:border-[#D97706]/70', palette.inset),
+                      )}
+                    >
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                      {method.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+
+            <label className="block">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Contact detail</span>
+              <input
+                type={formData.contactMethod === 'email' ? 'email' : 'text'}
+                name="contactValue"
+                value={formData.contactValue}
+                onChange={handleInputChange}
+                placeholder={formData.contactMethod === 'email' ? 'name@example.com' : '+20 100 000 0000'}
+                required
+                autoComplete={formData.contactMethod === 'email' ? 'email' : 'tel'}
+                className={cx('mt-2 h-12 w-full rounded-[0.9rem_0.5rem_1.1rem_0.6rem] border px-4 text-sm transition', palette.input)}
+              />
+            </label>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+            <label className="block">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Group size</span>
+              <select
+                name="guestCount"
+                value={formData.guestCount}
+                onChange={handleInputChange}
+                className={cx('mt-2 h-12 w-full rounded-[0.9rem_0.5rem_1.1rem_0.6rem] border px-4 text-sm transition', palette.input)}
+              >
+                <option value="1 guest">1 guest</option>
+                <option value="2 guests">2 guests</option>
+                <option value="3-5 guests">3-5 guests</option>
+                <option value="6-12 guests">6-12 guests</option>
+                <option value="13+ guests">13+ guests</option>
+              </select>
+            </label>
+
+            <div className={cx('rounded-[1rem_0.6rem_1.4rem_0.8rem] border p-4', palette.inset)}>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#D97706]">{selectedPurpose.label}</p>
+              <p className={cx('mt-2 text-sm leading-6', palette.muted)}>{selectedPurpose.detail}</p>
+            </div>
+          </div>
+
+          {isPrivateEvent && (
+            <label className="mt-5 block">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Private event scope</span>
+              <textarea
+                name="retreatDetails"
+                value={formData.retreatDetails}
+                onChange={handleInputChange}
+                rows={3}
+                placeholder="Share expected count, timing, dining, projection, music, or workshop needs."
+                className={cx('mt-2 w-full resize-none rounded-[1rem_0.6rem_1.4rem_0.8rem] border px-4 py-3 text-sm leading-6 transition', palette.input)}
+              />
+            </label>
+          )}
+
+          <label className="mt-5 block">
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Notes for the crew</span>
+            <textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleInputChange}
+              rows={4}
+              placeholder="Dietary needs, seating preferences, work setup, accessibility needs, or arrival timing."
+              className={cx('mt-2 w-full resize-none rounded-[1rem_0.6rem_1.4rem_0.8rem] border px-4 py-3 text-sm leading-6 transition', palette.input)}
+            />
+          </label>
+
+          <div className="mt-7 flex flex-col gap-4 border-t border-current/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className={cx('max-w-md text-sm leading-6', palette.muted)}>
+              Your request opens a prepared WhatsApp message so the local crew can confirm availability with the fastest response path.
+            </p>
+            <button
+              type="submit"
+              className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[1.3rem_0.75rem_1.7rem_0.95rem] bg-[#D97706] px-6 text-xs font-bold uppercase tracking-widest text-[#0A1118] shadow-[0_18px_48px_rgba(217,119,6,0.25)] transition hover:-translate-y-0.5 hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+            >
+              send request
+              <Send className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+        </form>
+
+        <aside className="space-y-5">
+          <section className={cx('rounded-[1.8rem_0.9rem_2.6rem_1.2rem] border p-5 shadow-lg', palette.panelSolid)}>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">location</p>
+                <h3 className="mt-3 font-serif text-3xl font-light lowercase leading-tight">tucked inside dahab.</h3>
+              </div>
+              <MapPin className="mt-1 h-5 w-5 text-[#D97706]" aria-hidden="true" />
+            </div>
+            <p className={cx('mt-4 text-sm leading-7', palette.muted)}>
+              Find Nakhyl Zone at 28.5109079, 34.5164631, a city-accessible sanctuary away from the beachfront rush.
+            </p>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=28.5109079,34.5164631"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#D97706] transition hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+            >
+              open map
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+          </section>
+
+          <section className={cx('rounded-[1.8rem_0.9rem_2.6rem_1.2rem] border p-5 shadow-lg', palette.panelSolid)}>
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">live proof</p>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              {SOCIAL_IMAGES.map((image, index) => (
+                <img
+                  key={image}
+                  src={image}
+                  alt={`Nakhyl Zone venue detail ${index + 1}`}
+                  className="aspect-square rounded-[1rem_0.55rem_1.35rem_0.75rem] object-cover"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+            <p className={cx('mt-4 text-sm leading-6', palette.muted)}>
+              Rugs, palms, cinema corners, and the approachable city entrance give your crew a quick read of the venue before arrival.
+            </p>
+          </section>
+
+          <section className={cx('rounded-[1.8rem_0.9rem_2.6rem_1.2rem] border p-5 shadow-lg', palette.panelSolid)}>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setIsAudioPlaying((value) => !value)}
+                className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#D97706] text-[#D97706] transition hover:bg-[#D97706] hover:text-[#0A1118] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+                aria-label={isAudioPlaying ? 'Pause oasis soundscape preview' : 'Play oasis soundscape preview'}
+              >
+                {isAudioPlaying ? <Pause className="h-4 w-4" aria-hidden="true" /> : <Play className="h-4 w-4" aria-hidden="true" />}
+              </button>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.22em]">listen to the oasis right now</p>
+                <p className={cx('mt-1 text-sm leading-6', palette.muted)}>
+                  {isAudioPlaying ? 'Playing preview: palm wind, embers, faint acoustic strings.' : 'Soundscape preview is paused.'}
+                </p>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <footer className={cx('border-t px-5 py-6 sm:px-8 lg:px-10', palette.hairline)}>
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <Headphones className="h-4 w-4 text-[#D97706]" aria-hidden="true" />
+            <p className="text-xs font-bold uppercase tracking-[0.22em]">Nakhyl Zone Dahab request console</p>
+          </div>
+          <p className={cx('font-mono text-[11px] uppercase tracking-widest', palette.muted)}>
+            Coordinates 28.5109079, 34.5164631 / Dahab time {dahabTime || '00:00'}
+          </p>
         </div>
       </footer>
 
-      {/* VIRTUAL CAMPFIRE EDITORIAL OVERLAY MODEL */}
-      {showCampfire && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
-          <div 
-            className="max-w-2xl w-full p-8 md:p-12 relative border text-[#F4EBE1] bg-[#0A1118] rounded-[2.5rem_1.2rem_4rem_2rem]"
-            style={{ borderColor: '#D97706' }}
-          >
-            <button 
-              onClick={() => setShowCampfire(false)}
-              className="absolute top-6 right-6 text-xl opacity-60 hover:opacity-100 transition-opacity"
-            >
-              ✕
-            </button>
-
-            <span className="text-[10px] tracking-[0.4em] uppercase text-amber-500 block mb-2">The Ritual of Sinai Bedouin Hospitality</span>
-            <h2 className="serif-editorial text-3xl md:text-5xl lowercase mb-6 border-b border-amber-900/40 pb-4">
-              brewing habak tea over glowing embers.
-            </h2>
-
-            <div className="space-y-4 text-xs tracking-wide font-light leading-relaxed opacity-90">
-              <p>
-                In the desert ecosystem, the campfire is not a decorative utility; it is the absolute spatial anchor of community life. When you cross our threshold into Nakhyl Zone, you leave behind corporate timelines.
-              </p>
-              <p>
-                Every sunset, we light the fire pits using local wood remnants. Fresh mountain sage and organic Habak mint are layered carefully into handmade metal kettles, sitting directly on raw coals. It is a slow, community process intended to initiate deep, human conversations between nomads.
-              </p>
-              <p className="italic text-amber-400">
-                "We do not build grids to capture time; we burn fires to release it."
-              </p>
+      {isCampfireOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/78 p-4 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="campfire-title">
+          <div className="relative grid max-h-[90vh] w-full max-w-4xl grid-cols-1 overflow-hidden rounded-[2.4rem_1.1rem_3.2rem_1.4rem] border border-[#D97706]/70 bg-[#0A1118] text-[#F4EBE1] shadow-2xl md:grid-cols-[0.45fr_0.55fr]">
+            <img src={fireImage} alt="Nakhyl Zone evening fire gathering" className="h-64 w-full object-cover md:h-full" />
+            <div className="overflow-y-auto p-7 sm:p-9">
+              <button
+                type="button"
+                onClick={() => setIsCampfireOpen(false)}
+                className="absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/20 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+                aria-label="Close campfire story"
+              >
+                <X className="h-4 w-4" aria-hidden="true" />
+              </button>
+              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D97706]">Sinai hospitality ritual</p>
+              <h2 id="campfire-title" className="mt-3 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">
+                habak tea, embers, and slower conversation.
+              </h2>
+              <div className="mt-6 space-y-4 text-sm leading-7 tracking-wide text-[#F4EBE1]/78">
+                <p>
+                  The campfire is the spatial anchor of Nakhyl Zone: a place to arrive after work, share tea, and let conversations become human again.
+                </p>
+                <p>
+                  Fresh mountain herbs, handmade kettles, low seating, acoustic music, and careful hosting create the slow-paced hospitality rhythm behind the brand.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCampfireOpen(false);
+                  setIsAudioPlaying(true);
+                }}
+                className="mt-8 inline-flex min-h-12 items-center justify-center gap-3 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] bg-[#D97706] px-6 text-xs font-bold uppercase tracking-widest text-[#0A1118] transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+              >
+                start soundscape
+                <Play className="h-4 w-4" aria-hidden="true" />
+              </button>
             </div>
-
-            <button 
-              onClick={() => { setShowCampfire(false); setIsAudioPlaying(true); }}
-              className="mt-8 text-xs font-semibold tracking-widest uppercase py-3 px-6 bg-amber-600 text-[#0A1118] rounded-xl hover:bg-amber-500 transition-all duration-300"
-            >
-              Close Story & Activate Audio Soundscape
-            </button>
           </div>
         </div>
       )}
-
-    </div>
+    </main>
   );
 }
