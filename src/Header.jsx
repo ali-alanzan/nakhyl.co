@@ -14,11 +14,11 @@ export default function Header({ isNight, setIsNight, onOpenCampfire }) {
 
   const navLinks = [
     { name: 'oasis', path: '/' },
-    { name: 'story', path: '/about' },
-    { name: 'kitchen', path: '/menu' },
-    { name: 'gatherings', path: '/gathering' },
-    { name: 'journal', path: '/journal' },
-    { name: 'connect', path: '/connect' },
+    // { name: 'story', path: '/about' },
+    // { name: 'kitchen', path: '/menu' },
+    // { name: 'gatherings', path: '/gathering' },
+    // { name: 'journal', path: '/journal' },
+    // { name: 'connect', path: '/connect' },
   ];
 
   return (
