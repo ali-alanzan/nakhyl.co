@@ -129,7 +129,8 @@ export default function Home() {
   };
 
   return (
-    <main className={cx('min-h-screen overflow-hidden font-sans antialiased transition-colors duration-700', palette.page)}>
+    // <main className={cx('min-h-screen overflow-hidden font-sans antialiased transition-colors duration-700', palette.page)}>
+    <main>
      This website is temporarily suspended. Please check back later for updates and new content.
     </main>
   );
