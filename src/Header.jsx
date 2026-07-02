@@ -20,7 +20,6 @@ export default function Header({ isNight, setIsNight, onOpenCampfire }) {
     { name: 'journal', path: '/journal' },
     { name: 'connect', path: '/connect' },
   ];
-  return "";
   return (
     <header className={`w-full border-b ${themeBorder} ${themeBg} backdrop-blur-md sticky top-0 z-40 transition-all duration-700`}>
       <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">

@@ -33,7 +33,6 @@ export default function Footer({ isNight }) {
     { name: 'connect wire', path: '/connect' }
   ];
 
-  return "";
 
   return (
     <footer className={`w-full border-t ${themeBorder} pt-16 pb-8 mt-24 transition-all duration-700 relative z-10`}>
