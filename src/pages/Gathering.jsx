@@ -122,6 +122,8 @@ const JOURNEY_STEPS = [
 ];
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
+const mistUnderline =
+  'relative inline-block after:absolute after:-bottom-2 after:left-0 after:h-px after:w-24 after:bg-[#B2EBF2]/70 after:shadow-[0_0_18px_rgba(178,235,242,0.42)] after:content-[""]';
 
 export default function GatheringHub() {
   const [isNight, setIsNight] = useState(true);
@@ -163,10 +165,14 @@ export default function GatheringHub() {
 
   const palette = {
     page: isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]',
-    panel: isNight ? 'bg-[#101A23]/92 border-[#F4EBE1]/12' : 'bg-white/45 border-[#2D4A3E]/15',
-    elevated: isNight ? 'bg-[#121E29] border-[#F4EBE1]/10' : 'bg-[#EFE5DA] border-[#2D4A3E]/14',
+    panel: isNight
+      ? 'bg-[#101A23]/92 border-[#B2EBF2]/18 shadow-[inset_0_1px_0_rgba(224,247,250,0.08)]'
+      : 'bg-[radial-gradient(circle_at_84%_0%,rgba(224,247,250,0.20),rgba(255,255,255,0.46)_38%)] border-[#B2EBF2]/42',
+    elevated: isNight
+      ? 'bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),#121E29_42%)] border-[#B2EBF2]/16'
+      : 'bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.18),rgba(239,229,218,0.96)_42%)] border-[#B2EBF2]/36',
     muted: isNight ? 'text-[#F4EBE1]/68' : 'text-[#2D4A3E]/68',
-    hairline: isNight ? 'border-[#F4EBE1]/12' : 'border-[#2D4A3E]/12',
+    hairline: isNight ? 'border-[#B2EBF2]/16' : 'border-[#B2EBF2]/42',
   };
 
   const handleBookingSubmit = (event) => {
@@ -233,6 +239,7 @@ export default function GatheringHub() {
               : 'bg-[linear-gradient(90deg,rgba(244,235,225,0.96)_0%,rgba(244,235,225,0.78)_45%,rgba(244,235,225,0.14)_100%)]',
           )}
         />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_86%_16%,rgba(178,235,242,0.18),transparent_30%)]" />
 
         <div className="relative z-10 mx-auto flex min-h-[760px] max-w-7xl flex-col justify-between px-5 py-8 sm:px-8 lg:px-10">
           <nav className="flex max-w-[calc(100%-7rem)] items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em]">
@@ -243,14 +250,14 @@ export default function GatheringHub() {
 
           <div className="grid gap-10 pb-8 pt-28 lg:grid-cols-[minmax(0,1fr)_390px] lg:items-end">
             <div className="max-w-3xl">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-current/15 bg-current/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#B2EBF2]/35 bg-[#E0F7FA]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
                 <MapPin className="h-3.5 w-3.5 text-[#D97706]" aria-hidden="true" />
                 Dahab courtyard sanctuary
                 <span className="opacity-50">/</span>
                 {dahabTime || 'Africa/Cairo'}
               </div>
 
-              <h1 className="max-w-4xl font-serif text-5xl font-light lowercase leading-[1.08] sm:text-6xl lg:text-7xl">
+              <h1 className="max-w-4xl font-serif text-5xl font-light lowercase leading-[1.08] [text-shadow:0_0_24px_rgba(178,235,242,0.16)] sm:text-6xl lg:text-7xl">
                 weekly rituals inside the palm grove.
               </h1>
               <p className={cx('mt-6 max-w-2xl text-sm leading-7 tracking-wide sm:text-base', palette.muted)}>
@@ -268,7 +275,7 @@ export default function GatheringHub() {
                 <button
                   type="button"
                   onClick={() => setIsAudioPlaying((value) => !value)}
-                  className="inline-flex items-center justify-center gap-3 rounded-[1.2rem_1.8rem_0.9rem_1.4rem] border border-current/15 bg-current/[0.04] px-6 py-4 text-[11px] font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-current/[0.08]"
+                  className="inline-flex items-center justify-center gap-3 rounded-[1.2rem_1.8rem_0.9rem_1.4rem] border border-[#B2EBF2]/40 bg-[#E0F7FA]/10 px-6 py-4 text-[11px] font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-[#E0F7FA]/16"
                   aria-pressed={isAudioPlaying}
                 >
                   {isAudioPlaying ? <Pause className="h-4 w-4" aria-hidden="true" /> : <Play className="h-4 w-4" aria-hidden="true" />}
@@ -278,7 +285,7 @@ export default function GatheringHub() {
             </div>
 
             <aside className={cx('rounded-[2rem_1rem_2.8rem_1.4rem] border p-5 shadow-2xl backdrop-blur-xl', palette.panel)}>
-              <div className="flex items-center justify-between gap-4 border-b border-current/10 pb-4">
+              <div className="flex items-center justify-between gap-4 border-b border-[#B2EBF2]/18 pb-4">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest opacity-55">Tonight's featured circle</p>
                   <h2 className="mt-1 font-serif text-2xl lowercase leading-tight">{selectedEvent.title}</h2>
@@ -291,7 +298,7 @@ export default function GatheringHub() {
                   ['Time', selectedEvent.time],
                   ['Open', selectedEvent.capacity],
                 ].map(([label, value]) => (
-                  <div key={label} className="rounded-[1rem_0.6rem_1.3rem_0.8rem] bg-current/[0.045] px-3 py-4">
+                  <div key={label} className="rounded-[1rem_0.6rem_1.3rem_0.8rem] border border-[#B2EBF2]/25 bg-[#E0F7FA]/[0.06] px-3 py-4">
                     <dt className="text-[9px] font-bold uppercase tracking-widest opacity-50">{label}</dt>
                     <dd className="mt-1 text-xs font-semibold tracking-wide">{value}</dd>
                   </div>
@@ -319,7 +326,7 @@ export default function GatheringHub() {
         <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">seasonal rhythm</p>
-            <h2 className="mt-3 font-serif text-4xl lowercase leading-tight sm:text-5xl">choose your gathering</h2>
+            <h2 className={cx('mt-3 font-serif text-4xl lowercase leading-tight sm:text-5xl', mistUnderline)}>choose your gathering</h2>
           </div>
           <p className={cx('max-w-md text-sm leading-6 tracking-wide', palette.muted)}>
             A clear event matrix replaces hidden schedules and helps visitors understand the mood, timing, and capacity before they request a place.
@@ -340,7 +347,7 @@ export default function GatheringHub() {
                     'group grid w-full grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-4 rounded-[1.6rem_0.8rem_2.1rem_1rem] border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-[#D97706]',
                     isSelected
                       ? 'border-[#D97706] bg-[#D97706] text-[#0A1118] shadow-xl'
-                      : cx(palette.elevated, 'hover:-translate-y-0.5 hover:border-[#D97706]/60'),
+                      : cx(palette.elevated, 'hover:-translate-y-0.5 hover:border-[#B2EBF2]/60'),
                   )}
                   aria-pressed={isSelected}
                 >
@@ -381,7 +388,7 @@ export default function GatheringHub() {
                   [Users, selectedEvent.capacity],
                   [Sparkles, selectedEvent.host],
                 ].map(([Icon, value]) => (
-                  <div key={value} className="flex items-center gap-3 rounded-[1.2rem_0.8rem_1.5rem_1rem] border border-current/10 bg-current/[0.035] p-4">
+                  <div key={value} className="flex items-center gap-3 rounded-[1.2rem_0.8rem_1.5rem_1rem] border border-[#B2EBF2]/28 bg-[#E0F7FA]/[0.05] p-4">
                     <Icon className="h-4 w-4 shrink-0 text-[#D97706]" aria-hidden="true" />
                     <span className="text-xs font-semibold tracking-wide">{value}</span>
                   </div>
@@ -396,11 +403,11 @@ export default function GatheringHub() {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(380px,0.9fr)]">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">sanctuary map</p>
-            <h2 className="mt-3 font-serif text-4xl lowercase leading-tight sm:text-5xl">select your cushion zone</h2>
+            <h2 className={cx('mt-3 font-serif text-4xl lowercase leading-tight sm:text-5xl', mistUnderline)}>select your cushion zone</h2>
 
             <div className={cx('mt-8 rounded-[3.2rem_1.4rem_4rem_1.8rem] border p-5 sm:p-7', palette.elevated)}>
               <div className="relative grid min-h-[470px] grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="pointer-events-none absolute inset-8 hidden rounded-[45%_35%_50%_40%] border border-dashed border-[#D97706]/35 sm:block" />
+                <div className="pointer-events-none absolute inset-8 hidden rounded-[45%_35%_50%_40%] border border-dashed border-[#B2EBF2]/45 sm:block" />
                 <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 sm:block">
                   <div className="flex h-24 w-24 items-center justify-center rounded-full border border-[#D97706]/50 bg-[#D97706]/12 shadow-[0_0_45px_rgba(217,119,6,0.25)]">
                     <Flame className="h-8 w-8 text-[#D97706]" aria-hidden="true" />
@@ -422,7 +429,7 @@ export default function GatheringHub() {
                         isBooked && 'cursor-not-allowed opacity-45',
                         isSelected
                           ? 'z-20 border-[#D97706] bg-[#D97706] text-[#0A1118] shadow-2xl'
-                          : cx('z-0 hover:-translate-y-0.5 hover:border-[#D97706]/60', isNight ? 'bg-[#0A1118]/45 border-[#F4EBE1]/10' : 'bg-[#F4EBE1]/72 border-[#2D4A3E]/12'),
+                          : cx('z-0 hover:-translate-y-0.5 hover:border-[#B2EBF2]/60', isNight ? 'bg-[#0A1118]/45 border-[#B2EBF2]/14' : 'bg-[#E0F7FA]/10 border-[#B2EBF2]/36'),
                       )}
                     >
                       <span>
@@ -448,12 +455,12 @@ export default function GatheringHub() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">booking console</p>
-                <h3 className="mt-2 font-serif text-3xl lowercase leading-tight">request your place</h3>
+                <h3 className={cx('mt-2 font-serif text-3xl lowercase leading-tight', mistUnderline)}>request your place</h3>
               </div>
               <Ticket className="h-8 w-8 text-[#D97706]" aria-hidden="true" />
             </div>
 
-            <div className="mt-7 space-y-3 rounded-[1.4rem_0.8rem_1.8rem_1rem] border border-current/10 bg-current/[0.04] p-5">
+            <div className="mt-7 space-y-3 rounded-[1.4rem_0.8rem_1.8rem_1rem] border border-[#B2EBF2]/28 bg-[#E0F7FA]/[0.06] p-5">
               <div>
                 <p className="text-[9px] font-bold uppercase tracking-widest opacity-50">Gathering</p>
                 <p className="mt-1 text-sm font-semibold tracking-wide">{selectedEvent.title}</p>
@@ -518,7 +525,7 @@ export default function GatheringHub() {
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">authentic proof</p>
-            <h2 className="mt-3 font-serif text-4xl lowercase leading-tight sm:text-5xl">a real courtyard, not a generic venue page</h2>
+            <h2 className={cx('mt-3 font-serif text-4xl lowercase leading-tight sm:text-5xl', mistUnderline)}>a real courtyard, not a generic venue page</h2>
             <p className={cx('mt-5 text-sm leading-7 tracking-wide', palette.muted)}>
               The layout uses the provided Maps imagery as native visual proof: palm shade, hand-built seating, sandstone textures, and the accessible Dahab location. It keeps the enterprise polish while preserving the raw cultural atmosphere.
             </p>

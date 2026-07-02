@@ -106,6 +106,8 @@ const AUDIO_STORIES = [
 ];
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
+const mistUnderline =
+  'relative inline-block after:absolute after:-bottom-2 after:left-0 after:h-px after:w-24 after:bg-[#B2EBF2]/70 after:shadow-[0_0_18px_rgba(178,235,242,0.42)] after:content-[""]';
 
 function IconButton({ children, label, className = '', ...props }) {
   return (
@@ -142,7 +144,7 @@ function ArticleCard({ article, bookmarked, onBookmark, palette }) {
           loading={article.featured ? 'eager' : 'lazy'}
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,17,24,0.02),rgba(10,17,24,0.62))]" />
-        <div className="absolute left-5 top-5 rounded-full border border-[#F4EBE1]/25 bg-[#0A1118]/55 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#F4EBE1] backdrop-blur-md">
+        <div className="absolute left-5 top-5 rounded-full border border-[#B2EBF2]/35 bg-[#0A1118]/55 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#F4EBE1] backdrop-blur-md">
           {article.category}
         </div>
       </div>
@@ -154,7 +156,7 @@ function ArticleCard({ article, bookmarked, onBookmark, palette }) {
             <span className="h-1 w-1 rounded-full bg-[#D97706]" />
             <span>{article.readTime} read</span>
           </div>
-          <h3 className="font-serif text-3xl font-light lowercase leading-tight tracking-normal transition group-hover:text-[#D97706]">
+          <h3 className={cx('font-serif text-3xl font-light lowercase leading-tight tracking-normal transition group-hover:text-[#D97706]', mistUnderline)}>
             {article.title}
           </h3>
           <p className={cx('mt-4 max-w-2xl text-sm leading-7 tracking-wide', palette.muted)}>{article.deck}</p>
@@ -189,7 +191,7 @@ function ArticleCard({ article, bookmarked, onBookmark, palette }) {
 
 function AudioStory({ story, isPlaying, onToggle, palette }) {
   return (
-    <div className={cx('border p-5 shadow-lg transition duration-300 sm:p-6', 'rounded-[1.8rem_3rem_1.2rem_2.2rem]', palette.panel, isPlaying && 'ring-1 ring-[#D97706]/50')}>
+    <div className={cx('border p-5 shadow-lg transition duration-300 sm:p-6', 'rounded-[1.8rem_3rem_1.2rem_2.2rem]', palette.panel, isPlaying && 'ring-1 ring-[#B2EBF2]/55')}>
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div className="flex gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[1.1rem_0.7rem_1.4rem_0.9rem] bg-[#D97706]/15 text-[#D97706]">
@@ -197,7 +199,7 @@ function AudioStory({ story, isPlaying, onToggle, palette }) {
           </div>
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#D97706]">field recording</p>
-            <h4 className="mt-2 font-serif text-2xl font-light lowercase leading-snug">{story.title}</h4>
+            <h4 className={cx('mt-2 font-serif text-2xl font-light lowercase leading-snug', mistUnderline)}>{story.title}</h4>
             <p className={cx('mt-2 text-sm leading-7 tracking-wide', palette.muted)}>{story.description}</p>
             <p className={cx('mt-3 text-[11px] uppercase tracking-[0.22em]', palette.muted)}>
               Narrated by {story.narrator}
@@ -252,14 +254,18 @@ export default function Journal() {
   const palette = useMemo(
     () => ({
       page: isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]',
-      panel: isNight ? 'border-[#F4EBE1]/12 bg-[#111B24]/88' : 'border-[#2D4A3E]/15 bg-white/45',
-      panelSolid: isNight ? 'border-[#F4EBE1]/12 bg-[#101922]' : 'border-[#2D4A3E]/14 bg-[#EEE3D7]',
+      panel: isNight
+        ? 'border-[#B2EBF2]/18 bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),rgba(17,27,36,0.9)_42%)]'
+        : 'border-[#B2EBF2]/42 bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.18),rgba(255,255,255,0.46)_42%)]',
+      panelSolid: isNight
+        ? 'border-[#B2EBF2]/16 bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),#101922_42%)]'
+        : 'border-[#B2EBF2]/36 bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.18),rgba(238,227,215,0.96)_42%)]',
       muted: isNight ? 'text-[#F4EBE1]/68' : 'text-[#2D4A3E]/72',
-      hairline: isNight ? 'border-[#F4EBE1]/12' : 'border-[#2D4A3E]/12',
+      hairline: isNight ? 'border-[#B2EBF2]/16' : 'border-[#B2EBF2]/42',
       heroOverlay: isNight
         ? 'bg-[linear-gradient(90deg,rgba(10,17,24,0.96)_0%,rgba(10,17,24,0.75)_48%,rgba(10,17,24,0.22)_100%)]'
         : 'bg-[linear-gradient(90deg,rgba(244,235,225,0.96)_0%,rgba(244,235,225,0.74)_48%,rgba(244,235,225,0.18)_100%)]',
-      sticky: isNight ? 'border-[#F4EBE1]/12 bg-[#0A1118]/88' : 'border-[#2D4A3E]/12 bg-[#F4EBE1]/88',
+      sticky: isNight ? 'border-[#B2EBF2]/16 bg-[#0A1118]/88' : 'border-[#B2EBF2]/42 bg-[#F4EBE1]/88',
     }),
     [isNight],
   );
@@ -302,12 +308,13 @@ export default function Journal() {
           loading="eager"
         />
         <div className={cx('absolute inset-0', palette.heroOverlay)} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_86%_16%,rgba(178,235,242,0.18),transparent_30%)]" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-current/[0.08] to-transparent" />
 
         <div className="relative z-10 mx-auto grid min-h-[calc(100vh-6rem)] max-w-7xl grid-cols-1 gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(340px,0.5fr)] lg:px-10">
           <div className="flex max-w-4xl flex-col justify-center py-12 lg:py-20">
             <div className="mb-8 flex flex-wrap items-center gap-3">
-              <span className="rounded-full border border-current/15 bg-current/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] backdrop-blur-md">
+              <span className="rounded-full border border-[#B2EBF2]/35 bg-[#E0F7FA]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.28em] backdrop-blur-md">
                 sinai journal
               </span>
               <span className={cx('inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.28em]', palette.muted)}>
@@ -316,7 +323,7 @@ export default function Journal() {
               </span>
             </div>
 
-            <h1 className="max-w-4xl font-serif text-5xl font-light lowercase leading-[1.03] tracking-normal sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-4xl font-serif text-5xl font-light lowercase leading-[1.03] tracking-normal [text-shadow:0_0_24px_rgba(178,235,242,0.16)] sm:text-6xl lg:text-7xl">
               stories from the quiet side of dahab.
             </h1>
             <p className={cx('mt-7 max-w-2xl text-base leading-8 tracking-wide sm:text-lg', palette.muted)}>
@@ -334,7 +341,7 @@ export default function Journal() {
               <button
                 type="button"
                 onClick={() => setIsCampfireOpen(true)}
-                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-current/15 bg-current/[0.04] px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-current/[0.09] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-[#B2EBF2]/40 bg-[#E0F7FA]/10 px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-[#E0F7FA]/16 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
               >
                 open campfire story
                 <Flame className="h-4 w-4 text-[#D97706]" aria-hidden="true" />
@@ -353,7 +360,7 @@ export default function Journal() {
                   ['4', 'editorial tracks'],
                   ['2026', 'field season'],
                 ].map(([value, label]) => (
-                  <div key={label} className="rounded-[1rem_0.6rem_1.2rem_0.7rem] border border-current/10 bg-current/[0.035] p-3">
+                  <div key={label} className="rounded-[1rem_0.6rem_1.2rem_0.7rem] border border-[#B2EBF2]/30 bg-[#E0F7FA]/[0.06] p-3">
                     <div className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#D97706]">{value}</div>
                     <div className={cx('mt-1 text-[10px] uppercase tracking-[0.2em]', palette.muted)}>{label}</div>
                   </div>
@@ -411,7 +418,7 @@ export default function Journal() {
         <div className="mb-10 grid gap-8 lg:grid-cols-[0.7fr_1fr] lg:items-end">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">latest dispatch</p>
-            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">{featuredArticle.title}.</h2>
+            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>{featuredArticle.title}.</h2>
           </div>
           <p className={cx('max-w-2xl text-sm leading-7 tracking-wide lg:justify-self-end', palette.muted)}>
             Designed as a living editorial surface: filter, save, listen, and subscribe without leaving the journal flow.
@@ -439,11 +446,11 @@ export default function Journal() {
         )}
       </section>
 
-      <section className={cx('border-y px-5 py-16 sm:px-8 lg:px-10', palette.hairline, isNight ? 'bg-[#0F1922]' : 'bg-[#EAE0D4]')}>
+      <section className={cx('border-y px-5 py-16 sm:px-8 lg:px-10', palette.hairline, isNight ? 'bg-[radial-gradient(circle_at_84%_0%,rgba(178,235,242,0.07),#0F1922_42%)]' : 'bg-[radial-gradient(circle_at_84%_0%,rgba(224,247,250,0.16),#EAE0D4_42%)]')}>
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">spoken archive</p>
-            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">oral notes that slow the page down.</h2>
+            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>oral notes that slow the page down.</h2>
             <p className={cx('mt-5 max-w-xl text-sm leading-7 tracking-wide', palette.muted)}>
               Audio cards give the journal a more human rhythm while keeping controls lightweight, keyboard-accessible, and clear.
             </p>
@@ -467,7 +474,7 @@ export default function Journal() {
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div id="journal-dispatch" className={cx('border p-7 shadow-xl sm:p-9', 'rounded-[3rem_1.2rem_3.8rem_1.8rem]', palette.panel)}>
             <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">seasonal ledger</p>
-            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight">receive the rare dispatches.</h2>
+            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight', mistUnderline)}>receive the rare dispatches.</h2>
             <p className={cx('mt-4 text-sm leading-7 tracking-wide', palette.muted)}>
               A low-frequency note for workshop calendars, cinema nights, acoustic circles, and the cultural references behind the space.
             </p>
@@ -503,14 +510,14 @@ export default function Journal() {
           <div className={cx('border p-4 shadow-xl', 'rounded-[1.6rem_3rem_1.3rem_2.4rem]', palette.panelSolid)}>
             <div className="grid grid-cols-2 gap-3">
               {SOCIAL_IMAGES.map((image, index) => (
-                <figure key={image} className="group relative overflow-hidden rounded-[1.3rem_0.7rem_1.6rem_0.9rem]">
+                <figure key={image} className="group relative overflow-hidden rounded-[1.3rem_0.7rem_1.6rem_0.9rem] border border-[#B2EBF2]/30">
                   <img
                     src={image}
                     alt={`Nakhyl Zone social proof capture ${index + 1}`}
                     className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
-                  <figcaption className="absolute inset-x-0 bottom-0 bg-[#0A1118]/70 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F4EBE1] opacity-0 backdrop-blur-md transition group-hover:opacity-100">
+                  <figcaption className="absolute inset-x-0 bottom-0 border-t border-[#B2EBF2]/25 bg-[#0A1118]/70 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F4EBE1] opacity-0 backdrop-blur-md transition group-hover:opacity-100">
                     visitor capture {index + 1}
                   </figcaption>
                 </figure>

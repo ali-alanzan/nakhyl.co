@@ -114,6 +114,10 @@ const socialPhotos = [
   { src: socialThree, label: 'Open-air evening at Nakhyl Zone' },
 ];
 
+const cx = (...classes) => classes.filter(Boolean).join(' ');
+const mistUnderline =
+  'relative inline-block after:absolute after:-bottom-2 after:left-0 after:h-px after:w-24 after:bg-[#B2EBF2]/70 after:shadow-[0_0_18px_rgba(178,235,242,0.42)] after:content-[""]';
+
 function getSectionItems(items, state) {
   return items.filter((item) => item.state === state);
 }
@@ -123,8 +127,8 @@ function MenuCard({ item, isNight }) {
     <article
       className={`group flex min-h-full flex-col overflow-hidden border transition duration-500 hover:-translate-y-1 focus-within:-translate-y-1 ${
         isNight
-          ? 'border-[#F4EBE1]/10 bg-[#121A23]/80 shadow-[0_22px_70px_rgba(0,0,0,0.26)]'
-          : 'border-[#2D4A3E]/12 bg-white/55 shadow-[0_18px_55px_rgba(45,74,62,0.08)]'
+          ? 'border-[#B2EBF2]/16 bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),rgba(18,26,35,0.84)_40%)] shadow-[0_22px_70px_rgba(0,0,0,0.26)]'
+          : 'border-[#B2EBF2]/40 bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.18),rgba(255,255,255,0.56)_42%)] shadow-[0_18px_55px_rgba(45,74,62,0.08)]'
       } rounded-[1.8rem_0.9rem_2.6rem_1.2rem]`}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -135,7 +139,7 @@ function MenuCard({ item, isNight }) {
           className="h-full w-full object-cover transition duration-[1200ms] group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A1118]/70 via-[#0A1118]/10 to-transparent" />
-        <span className="absolute left-4 top-4 rounded-[1rem_0.55rem_1.2rem_0.75rem] border border-white/20 bg-[#0A1118]/45 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[#F4EBE1] backdrop-blur-md">
+        <span className="absolute left-4 top-4 rounded-[1rem_0.55rem_1.2rem_0.75rem] border border-[#B2EBF2]/35 bg-[#0A1118]/45 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[#F4EBE1] backdrop-blur-md">
           {item.tag}
         </span>
       </div>
@@ -150,7 +154,7 @@ function MenuCard({ item, isNight }) {
             >
               {item.accent}
             </p>
-            <h3 className="font-serif text-2xl lowercase leading-snug text-current">
+            <h3 className={cx('font-serif text-2xl lowercase leading-snug text-current', mistUnderline)}>
               {item.title}
             </h3>
           </div>
@@ -176,20 +180,20 @@ function MenuSection({ eyebrow, icon: Icon, items, isNight }) {
           <div
             className={`mb-3 inline-flex items-center gap-2 rounded-[1rem_0.6rem_1.25rem_0.8rem] border px-3 py-2 text-[0.64rem] font-bold uppercase tracking-[0.28em] ${
               isNight
-                ? 'border-[#D97706]/25 text-[#D97706]'
-                : 'border-[#2D4A3E]/15 text-[#2D4A3E]/70'
+                ? 'border-[#B2EBF2]/24 bg-[#E0F7FA]/[0.04] text-[#D97706]'
+                : 'border-[#B2EBF2]/42 bg-[#E0F7FA]/10 text-[#2D4A3E]/70'
             }`}
           >
             <Icon className="h-4 w-4" aria-hidden="true" />
             {items.length} selections
           </div>
-          <h2 id={`${eyebrow}-heading`} className="font-serif text-4xl lowercase leading-tight md:text-5xl">
+          <h2 id={`${eyebrow}-heading`} className={cx('font-serif text-4xl lowercase leading-tight md:text-5xl', mistUnderline)}>
             {eyebrow}
           </h2>
         </div>
         <div
           className={`hidden h-px flex-1 sm:block ${
-            isNight ? 'bg-[#D97706]/25' : 'bg-[#2D4A3E]/15'
+            isNight ? 'bg-[#B2EBF2]/24' : 'bg-[#B2EBF2]/55'
           }`}
         />
       </div>
@@ -204,8 +208,8 @@ function MenuSection({ eyebrow, icon: Icon, items, isNight }) {
         <div
           className={`rounded-[2rem_1rem_2.6rem_1.4rem] border px-6 py-10 text-center text-sm ${
             isNight
-              ? 'border-[#F4EBE1]/10 bg-[#121A23]/70 text-[#F4EBE1]/65'
-              : 'border-[#2D4A3E]/12 bg-white/45 text-[#2D4A3E]/65'
+              ? 'border-[#B2EBF2]/16 bg-[#121A23]/70 text-[#F4EBE1]/65'
+              : 'border-[#B2EBF2]/38 bg-[#E0F7FA]/10 text-[#2D4A3E]/65'
           }`}
         >
           No dishes in this section match the selected filter.
@@ -278,7 +282,7 @@ export default function NakhylKitchenMenuRedesigned() {
         isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]'
       }`}
     >
-      <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden">
+      <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden border-b border-[#B2EBF2]/35">
         <img src={heroImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
         <div
           className={`absolute inset-0 ${
@@ -287,14 +291,15 @@ export default function NakhylKitchenMenuRedesigned() {
               : 'bg-gradient-to-b from-[#0A1118]/20 via-[#F4EBE1]/60 to-[#F4EBE1]'
           }`}
         />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_14%,rgba(178,235,242,0.18),transparent_30%)]" />
 
         <div className="relative z-10 mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-7xl flex-col px-5 py-8 sm:px-8 lg:px-12">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div
               className={`inline-flex items-center gap-3 rounded-[1.4rem_0.7rem_1.8rem_1rem] border px-4 py-3 backdrop-blur-md ${
                 isNight
-                  ? 'border-[#F4EBE1]/12 bg-[#0A1118]/45'
-                  : 'border-[#F4EBE1]/50 bg-[#F4EBE1]/42'
+                  ? 'border-[#B2EBF2]/20 bg-[#0A1118]/45'
+                  : 'border-[#B2EBF2]/45 bg-[#E0F7FA]/12'
               }`}
             >
               <UtensilsCrossed className="h-5 w-5 text-[#D97706]" aria-hidden="true" />
@@ -330,7 +335,7 @@ export default function NakhylKitchenMenuRedesigned() {
               >
                 Slow fire, palm shade, Sinai herbs
               </p>
-              <h1 className="font-serif text-5xl lowercase leading-[1.03] sm:text-6xl lg:text-7xl">
+              <h1 className="font-serif text-5xl lowercase leading-[1.03] [text-shadow:0_0_24px_rgba(178,235,242,0.16)] sm:text-6xl lg:text-7xl">
                 spiced by local tradition, cooked slowly on open embers
               </h1>
               <p className="mt-7 max-w-2xl text-base leading-8 opacity-82 md:text-lg">
@@ -352,8 +357,8 @@ export default function NakhylKitchenMenuRedesigned() {
                             ? 'border-[#D97706] bg-[#D97706] text-[#0A1118] shadow-[0_0_28px_rgba(217,119,6,0.28)]'
                             : 'border-[#2D4A3E] bg-[#2D4A3E] text-[#F4EBE1] shadow-[0_18px_40px_rgba(45,74,62,0.15)]'
                           : isNight
-                            ? 'border-[#F4EBE1]/14 bg-[#0A1118]/40 text-[#F4EBE1] hover:border-[#D97706]/60'
-                            : 'border-[#2D4A3E]/15 bg-[#F4EBE1]/58 text-[#2D4A3E] hover:bg-white/70'
+                            ? 'border-[#B2EBF2]/18 bg-[#0A1118]/40 text-[#F4EBE1] hover:border-[#B2EBF2]/45'
+                            : 'border-[#B2EBF2]/38 bg-[#E0F7FA]/10 text-[#2D4A3E] hover:bg-[#E0F7FA]/18'
                       }`}
                       role="tab"
                       aria-selected={isActive}
@@ -368,8 +373,8 @@ export default function NakhylKitchenMenuRedesigned() {
             <aside
               className={`rounded-[2.4rem_1rem_3.2rem_1.45rem] border p-5 backdrop-blur-xl ${
                 isNight
-                  ? 'border-[#F4EBE1]/12 bg-[#0A1118]/60'
-                  : 'border-[#F4EBE1]/55 bg-[#F4EBE1]/58'
+                  ? 'border-[#B2EBF2]/18 bg-[#0A1118]/60'
+                  : 'border-[#B2EBF2]/45 bg-[#E0F7FA]/12'
               }`}
               aria-label="Live menu context"
             >
@@ -382,7 +387,7 @@ export default function NakhylKitchenMenuRedesigned() {
                 </div>
                 <Clock3 className="h-8 w-8 text-[#D97706]" aria-hidden="true" />
               </div>
-              <div className={`h-px ${isNight ? 'bg-[#F4EBE1]/10' : 'bg-[#2D4A3E]/12'}`} />
+              <div className={`h-px ${isNight ? 'bg-[#B2EBF2]/18' : 'bg-[#B2EBF2]/55'}`} />
               <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] opacity-55">
@@ -414,15 +419,15 @@ export default function NakhylKitchenMenuRedesigned() {
               <p className="mb-2 text-[0.64rem] font-bold uppercase tracking-[0.3em] text-[#D97706]">
                 Direct counter request
               </p>
-              <h2 className="font-serif text-4xl lowercase leading-tight">want your tea ready when you walk in?</h2>
+              <h2 className={cx('font-serif text-4xl lowercase leading-tight', mistUnderline)}>want your tea ready when you walk in?</h2>
             </div>
           </div>
 
           <div
             className={`flex flex-col justify-center rounded-[1.4rem_3rem_1.8rem_2.2rem] border p-7 md:p-10 ${
               isNight
-                ? 'border-[#D97706]/22 bg-[#121A23] shadow-[0_28px_80px_rgba(0,0,0,0.28)]'
-                : 'border-[#2D4A3E]/12 bg-[#EAE1D5]/80 shadow-[0_18px_60px_rgba(45,74,62,0.08)]'
+                ? 'border-[#B2EBF2]/16 bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),#121A23_42%)] shadow-[0_28px_80px_rgba(0,0,0,0.28)]'
+                : 'border-[#B2EBF2]/38 bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.18),rgba(234,225,213,0.86)_42%)] shadow-[0_18px_60px_rgba(45,74,62,0.08)]'
             }`}
           >
             <div className="mb-7 flex items-center gap-3">
@@ -443,7 +448,7 @@ export default function NakhylKitchenMenuRedesigned() {
               </label>
               <div
                 className={`flex items-center gap-3 rounded-[1.4rem_0.8rem_1.8rem_1rem] border px-4 ${
-                  isNight ? 'border-[#F4EBE1]/12 bg-[#0A1118]/60' : 'border-[#2D4A3E]/14 bg-[#F4EBE1]/80'
+                  isNight ? 'border-[#B2EBF2]/16 bg-[#0A1118]/60' : 'border-[#B2EBF2]/38 bg-[#E0F7FA]/10'
                 }`}
               >
                 <Search className="h-4 w-4 opacity-45" aria-hidden="true" />
@@ -482,7 +487,7 @@ export default function NakhylKitchenMenuRedesigned() {
                 <Camera className="h-4 w-4" aria-hidden="true" />
                 Visitor atmosphere
               </p>
-              <h2 id="social-proof-heading" className="font-serif text-4xl lowercase leading-tight md:text-5xl">
+              <h2 id="social-proof-heading" className={cx('font-serif text-4xl lowercase leading-tight md:text-5xl', mistUnderline)}>
                 a real courtyard, not a stock moodboard
               </h2>
             </div>
@@ -495,10 +500,10 @@ export default function NakhylKitchenMenuRedesigned() {
             {socialPhotos.map((photo) => (
               <figure
                 key={photo.label}
-                className="relative aspect-[4/3] overflow-hidden rounded-[1.8rem_0.9rem_2.4rem_1.2rem]"
+                className="relative aspect-[4/3] overflow-hidden rounded-[1.8rem_0.9rem_2.4rem_1.2rem] border border-[#B2EBF2]/38"
               >
                 <img src={photo.src} alt={photo.label} loading="lazy" className="h-full w-full object-cover" />
-                <figcaption className="absolute bottom-4 left-4 right-4 rounded-[1rem_0.6rem_1.2rem_0.8rem] bg-[#0A1118]/55 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-[#F4EBE1] backdrop-blur-md">
+                <figcaption className="absolute bottom-4 left-4 right-4 rounded-[1rem_0.6rem_1.2rem_0.8rem] border border-[#B2EBF2]/30 bg-[#0A1118]/55 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-[#F4EBE1] backdrop-blur-md">
                   {photo.label}
                 </figcaption>
               </figure>

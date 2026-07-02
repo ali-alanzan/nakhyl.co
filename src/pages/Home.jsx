@@ -78,6 +78,8 @@ const RITUALS = [
 ];
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
+const mistUnderline =
+  'relative inline-block after:absolute after:-bottom-2 after:left-0 after:h-px after:w-24 after:bg-[#B2EBF2]/70 after:shadow-[0_0_18px_rgba(178,235,242,0.45)] after:content-[""]';
 
 export default function Home() {
   const [isNight, setIsNight] = useState(false);
@@ -105,10 +107,14 @@ export default function Home() {
   const palette = useMemo(
     () => ({
       page: isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]',
-      panel: isNight ? 'bg-[#111B24]/88 border-[#F4EBE1]/12' : 'bg-white/45 border-[#2D4A3E]/15',
-      panelSolid: isNight ? 'bg-[#101922] border-[#F4EBE1]/12' : 'bg-[#EEE3D7] border-[#2D4A3E]/14',
+      panel: isNight
+        ? 'bg-[#111B24]/88 border-[#B2EBF2]/18 shadow-[inset_0_1px_0_rgba(224,247,250,0.08)]'
+        : 'bg-[radial-gradient(circle_at_82%_0%,rgba(224,247,250,0.22),rgba(255,255,255,0.46)_38%,rgba(255,255,255,0.34)_100%)] border-[#B2EBF2]/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]',
+      panelSolid: isNight
+        ? 'bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),rgba(16,25,34,1)_42%)] border-[#B2EBF2]/16'
+        : 'bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.20),rgba(238,227,215,0.96)_40%)] border-[#B2EBF2]/38',
       muted: isNight ? 'text-[#F4EBE1]/70' : 'text-[#2D4A3E]/70',
-      hairline: isNight ? 'border-[#F4EBE1]/12' : 'border-[#2D4A3E]/12',
+      hairline: isNight ? 'border-[#B2EBF2]/16' : 'border-[#B2EBF2]/45',
       heroOverlay: isNight
         ? 'bg-[linear-gradient(90deg,rgba(10,17,24,0.96)_0%,rgba(10,17,24,0.76)_46%,rgba(10,17,24,0.18)_100%)]'
         : 'bg-[linear-gradient(90deg,rgba(244,235,225,0.98)_0%,rgba(244,235,225,0.78)_47%,rgba(244,235,225,0.12)_100%)]',
@@ -139,11 +145,12 @@ export default function Home() {
         />
         <div className={cx('absolute inset-0', palette.heroOverlay)} />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(217,119,6,0.18),transparent_32%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_14%,rgba(178,235,242,0.20),transparent_30%)]" />
 
         <div className="relative z-10 mx-auto grid min-h-[calc(100vh-6rem)] max-w-7xl grid-cols-1 gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.55fr)] lg:px-10">
           <div className="flex max-w-3xl flex-col justify-center py-16 lg:py-24">
             <div className="mb-8 flex flex-wrap items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em]">
-              <span className="rounded-full border border-current/15 bg-current/[0.04] px-4 py-2 backdrop-blur-md">
+              <span className="rounded-full border border-[#B2EBF2]/35 bg-[#E0F7FA]/10 px-4 py-2 backdrop-blur-md">
                 Dahab cultural oasis
               </span>
               <span className={cx('inline-flex items-center gap-2', palette.muted)}>
@@ -152,7 +159,7 @@ export default function Home() {
               </span>
             </div>
 
-            <h1 className="max-w-3xl font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-3xl font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal [text-shadow:0_0_24px_rgba(178,235,242,0.16)] sm:text-6xl lg:text-7xl">
               a quiet palm sanctuary tucked inside dahab.
             </h1>
             <p className={cx('mt-7 max-w-2xl text-base leading-8 tracking-wide sm:text-lg', palette.muted)}>
@@ -170,7 +177,7 @@ export default function Home() {
               </button>
               <a
                 href="#experience"
-                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-current/15 bg-current/[0.04] px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-current/[0.09] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-[#B2EBF2]/40 bg-[#E0F7FA]/10 px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-[#E0F7FA]/16 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
               >
                 explore the courtyard
               </a>
@@ -192,7 +199,7 @@ export default function Home() {
                   [dahabTime || '00:00', 'dahab time'],
                   ['Mar 2026', 'visual set'],
                 ].map(([value, label]) => (
-                  <div key={label} className="rounded-[1rem_0.6rem_1.2rem_0.7rem] border border-current/10 bg-current/[0.035] p-3">
+                  <div key={label} className="rounded-[1rem_0.6rem_1.2rem_0.7rem] border border-[#B2EBF2]/30 bg-[#E0F7FA]/[0.06] p-3">
                     <div className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#D97706]">{value}</div>
                     <div className={cx('mt-1 text-[10px] uppercase tracking-[0.2em]', palette.muted)}>{label}</div>
                   </div>
@@ -242,7 +249,7 @@ export default function Home() {
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">first-shot impact</span>
-            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">
+            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>
               every scroll reveals another hidden courtyard.
             </h2>
           </div>
@@ -256,7 +263,7 @@ export default function Home() {
             <article
               key={card.title}
               className={cx(
-                'group min-h-[31rem] overflow-hidden border bg-current/[0.025] shadow-xl transition duration-500 hover:-translate-y-1',
+                'group min-h-[31rem] overflow-hidden border bg-[radial-gradient(circle_at_85%_0%,rgba(224,247,250,0.12),rgba(255,255,255,0.025)_36%)] shadow-xl transition duration-500 hover:-translate-y-1',
                 palette.hairline,
                 index === 0 && 'rounded-[3rem_1.2rem_2rem_1.5rem]',
                 index === 1 && 'rounded-[1.4rem_3rem_1.8rem_2.4rem]',
@@ -283,10 +290,10 @@ export default function Home() {
 
       <section className={cx('border-y px-5 py-20 sm:px-8 lg:px-10', palette.hairline)}>
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div className="relative overflow-hidden rounded-[1.4rem_3.2rem_2.6rem_1.2rem] border border-current/10">
+          <div className="relative overflow-hidden rounded-[1.4rem_3.2rem_2.6rem_1.2rem] border border-[#B2EBF2]/45">
             <img src={seaImage} alt="Dahab coastline near Nakhyl Zone" className="h-[32rem] w-full object-cover" loading="lazy" />
             <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(10,17,24,0.72),rgba(10,17,24,0.06))]" />
-            <div className="absolute bottom-5 left-5 right-5 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] border border-white/15 bg-black/45 p-5 text-[#F4EBE1] backdrop-blur-md">
+            <div className="absolute bottom-5 left-5 right-5 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] border border-[#B2EBF2]/35 bg-[#0A1118]/45 p-5 text-[#F4EBE1] backdrop-blur-md">
               <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">accessible sanctuary</p>
               <p className="mt-2 font-serif text-2xl lowercase">steps from the water, emotionally far from the noise.</p>
             </div>
@@ -294,7 +301,7 @@ export default function Home() {
 
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">optimized guest flow</span>
-            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">
+            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>
               from map discovery to confirmed visit in three clear moves.
             </h2>
             <div className="mt-8 space-y-4">
@@ -323,7 +330,7 @@ export default function Home() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">ambient state</span>
-                <h2 className="mt-3 font-serif text-3xl font-light lowercase">chase sun or follow sparks.</h2>
+                <h2 className={cx('mt-3 font-serif text-3xl font-light lowercase', mistUnderline)}>chase sun or follow sparks.</h2>
               </div>
               <button
                 type="button"
@@ -344,7 +351,7 @@ export default function Home() {
                 [Headphones, 'low noise', 'acoustic-first nights'],
                 [Sparkles, 'premium raw', 'organic visual system'],
               ].map(([Icon, label, text]) => (
-                <div key={label} className="rounded-[1.2rem_0.7rem_1.4rem_0.9rem] border border-current/10 bg-current/[0.035] p-4">
+                <div key={label} className="rounded-[1.2rem_0.7rem_1.4rem_0.9rem] border border-[#B2EBF2]/28 bg-[#E0F7FA]/[0.05] p-4">
                   <Icon className="h-5 w-5 text-[#D97706]" aria-hidden="true" />
                   <p className="mt-3 text-xs font-bold uppercase tracking-widest">{label}</p>
                   <p className={cx('mt-1 text-xs leading-5', palette.muted)}>{text}</p>
@@ -357,7 +364,7 @@ export default function Home() {
             {RITUALS.map(([tag, title, text]) => (
               <article key={title} className={cx('rounded-[1.8rem_0.9rem_2.4rem_1.2rem] border p-6', palette.panel)}>
                 <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">{tag}</span>
-                <h3 className="mt-4 font-serif text-2xl font-light lowercase">{title}</h3>
+                <h3 className={cx('mt-4 font-serif text-2xl font-light lowercase', mistUnderline)}>{title}</h3>
                 <p className={cx('mt-3 text-sm leading-7', palette.muted)}>{text}</p>
               </article>
             ))}
@@ -370,7 +377,7 @@ export default function Home() {
           <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">authentic social stream</span>
-              <h2 className="mt-4 font-serif text-4xl font-light lowercase">real textures, real courtyard proof.</h2>
+              <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase', mistUnderline)}>real textures, real courtyard proof.</h2>
             </div>
             <button
               type="button"
@@ -387,7 +394,7 @@ export default function Home() {
               <div
                 key={image}
                 className={cx(
-                  'overflow-hidden border border-current/10 bg-current/[0.025]',
+                  'overflow-hidden border border-[#B2EBF2]/40 bg-[#E0F7FA]/[0.04]',
                   index % 2 === 0 ? 'rounded-[2.2rem_0.9rem_2.8rem_1.4rem]' : 'rounded-[0.9rem_2.2rem_1.4rem_2.8rem]',
                 )}
               >

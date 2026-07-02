@@ -97,6 +97,8 @@ const ACCORDION = [
 ];
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
+const mistUnderline =
+  'relative inline-block after:absolute after:-bottom-2 after:left-0 after:h-px after:w-24 after:bg-[#B2EBF2]/70 after:shadow-[0_0_18px_rgba(178,235,242,0.42)] after:content-[""]';
 
 export default function About() {
   const [isNight, setIsNight] = useState(false);
@@ -126,10 +128,14 @@ export default function About() {
   const palette = useMemo(
     () => ({
       page: isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]',
-      panel: isNight ? 'bg-[#111B24]/92 border-[#F4EBE1]/12' : 'bg-white/48 border-[#2D4A3E]/15',
-      solid: isNight ? 'bg-[#101922] border-[#F4EBE1]/12' : 'bg-[#EEE3D7] border-[#2D4A3E]/14',
+      panel: isNight
+        ? 'bg-[#111B24]/92 border-[#B2EBF2]/18 shadow-[inset_0_1px_0_rgba(224,247,250,0.08)]'
+        : 'bg-[radial-gradient(circle_at_84%_0%,rgba(224,247,250,0.20),rgba(255,255,255,0.48)_38%,rgba(255,255,255,0.34)_100%)] border-[#B2EBF2]/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]',
+      solid: isNight
+        ? 'bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),rgba(16,25,34,1)_42%)] border-[#B2EBF2]/16'
+        : 'bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.20),rgba(238,227,215,0.96)_40%)] border-[#B2EBF2]/36',
       muted: isNight ? 'text-[#F4EBE1]/70' : 'text-[#2D4A3E]/72',
-      hairline: isNight ? 'border-[#F4EBE1]/12' : 'border-[#2D4A3E]/12',
+      hairline: isNight ? 'border-[#B2EBF2]/16' : 'border-[#B2EBF2]/42',
       wash: isNight
         ? 'bg-[linear-gradient(90deg,rgba(10,17,24,0.96)_0%,rgba(10,17,24,0.74)_48%,rgba(10,17,24,0.18)_100%)]'
         : 'bg-[linear-gradient(90deg,rgba(244,235,225,0.98)_0%,rgba(244,235,225,0.76)_48%,rgba(244,235,225,0.1)_100%)]',
@@ -191,11 +197,12 @@ export default function About() {
         />
         <div className={cx('absolute inset-0', palette.wash)} />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_22%,rgba(217,119,6,0.2),transparent_32%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_18%,rgba(178,235,242,0.18),transparent_30%)]" />
 
         <div className="relative z-10 mx-auto grid min-h-[740px] max-w-7xl grid-cols-1 gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(330px,0.42fr)] lg:px-10">
           <div className="flex max-w-4xl flex-col justify-center py-16">
             <div className="mb-8 flex flex-wrap items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em]">
-              <span className="inline-flex items-center gap-2 rounded-full border border-current/15 bg-current/[0.04] px-4 py-2 backdrop-blur-md">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#B2EBF2]/35 bg-[#E0F7FA]/10 px-4 py-2 backdrop-blur-md">
                 <MapPin className="h-3.5 w-3.5 text-[#D97706]" aria-hidden="true" />
                 Dahab cultural oasis
               </span>
@@ -205,7 +212,7 @@ export default function About() {
               </span>
             </div>
 
-            <h1 className="max-w-4xl font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-4xl font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal [text-shadow:0_0_24px_rgba(178,235,242,0.16)] sm:text-6xl lg:text-7xl">
               built around the palms, not over them.
             </h1>
             <p className={cx('mt-7 max-w-2xl text-base leading-8 tracking-wide sm:text-lg', palette.muted)}>
@@ -223,7 +230,7 @@ export default function About() {
               </button>
               <a
                 href="#story"
-                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-current/15 bg-current/[0.04] px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-current/[0.09] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-[#B2EBF2]/40 bg-[#E0F7FA]/10 px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-[#E0F7FA]/16 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
               >
                 read the story
               </a>
@@ -243,7 +250,7 @@ export default function About() {
                   [dahabTime || '00:00', 'dahab time'],
                   ['oasis', 'venue type'],
                 ].map(([value, label]) => (
-                  <div key={label} className="rounded-[1rem_0.6rem_1.2rem_0.7rem] border border-current/10 bg-current/[0.035] p-3">
+                  <div key={label} className="rounded-[1rem_0.6rem_1.2rem_0.7rem] border border-[#B2EBF2]/30 bg-[#E0F7FA]/[0.06] p-3">
                     <dt className={cx('text-[9px] uppercase tracking-[0.2em]', palette.muted)}>{label}</dt>
                     <dd className="mt-1 font-mono text-[11px] font-bold uppercase tracking-widest text-[#D97706]">{value}</dd>
                   </div>
@@ -291,7 +298,7 @@ export default function About() {
         <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">origin and purpose</span>
-            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">
+            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>
               a city-accessible sanctuary with a desert sense of time.
             </h2>
             <p className={cx('mt-6 text-sm leading-7 tracking-wide', palette.muted)}>
@@ -313,7 +320,7 @@ export default function About() {
                   )}
                 >
                   <Icon className="h-6 w-6 text-[#D97706]" aria-hidden="true" />
-                  <h3 className="mt-5 font-serif text-2xl font-light lowercase leading-tight">{principle.title}</h3>
+                  <h3 className={cx('mt-5 font-serif text-2xl font-light lowercase leading-tight', mistUnderline)}>{principle.title}</h3>
                   <p className={cx('mt-4 text-sm leading-7', palette.muted)}>{principle.text}</p>
                 </article>
               );
@@ -327,7 +334,7 @@ export default function About() {
           <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">spatial identity</span>
-              <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">three layers of the oasis.</h2>
+              <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>three layers of the oasis.</h2>
             </div>
             <p className={cx('max-w-md text-sm leading-7 tracking-wide', palette.muted)}>
               Each layer gives visitors a different pace while preserving one clear brand promise: quiet hospitality shaped by the land.
@@ -367,7 +374,7 @@ export default function About() {
               <div className="relative min-h-[300px] overflow-hidden sm:min-h-[420px]">
                 <img src={selectedZone.image} alt={`${selectedZone.title} at Nakhyl Zone`} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A1118]/86 via-[#0A1118]/26 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-[#F4EBE1]">
+                <div className="absolute bottom-6 left-6 right-6 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] border border-[#B2EBF2]/28 bg-[#0A1118]/28 p-4 text-[#F4EBE1] backdrop-blur-sm">
                   <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">{selectedZone.stat}</p>
                   <h3 className="mt-2 max-w-2xl font-serif text-4xl font-light lowercase leading-tight">{selectedZone.title}</h3>
                 </div>
@@ -390,10 +397,10 @@ export default function About() {
 
       <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
         <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div className="relative overflow-hidden rounded-[1.4rem_3.2rem_2.6rem_1.2rem] border border-current/10 shadow-2xl">
+          <div className="relative overflow-hidden rounded-[1.4rem_3.2rem_2.6rem_1.2rem] border border-[#B2EBF2]/42 shadow-2xl">
             <img src={seaImage} alt="Dahab Red Sea horizon near Nakhyl Zone" className="h-[34rem] w-full object-cover" loading="lazy" />
             <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(10,17,24,0.72),rgba(10,17,24,0.08))]" />
-            <div className="absolute bottom-5 left-5 right-5 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] border border-white/15 bg-black/45 p-5 text-[#F4EBE1] backdrop-blur-md">
+            <div className="absolute bottom-5 left-5 right-5 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] border border-[#B2EBF2]/35 bg-[#0A1118]/45 p-5 text-[#F4EBE1] backdrop-blur-md">
               <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">accessible refuge</p>
               <p className="mt-2 font-serif text-2xl font-light lowercase">near the Red Sea, held at a slower human rhythm.</p>
             </div>
@@ -401,7 +408,7 @@ export default function About() {
 
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">operating philosophy</span>
-            <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">the oasis code is simple.</h2>
+            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>the oasis code is simple.</h2>
             <div className="mt-8 space-y-4">
               {ACCORDION.map((item, index) => {
                 const isOpen = openPanel === index;
@@ -440,7 +447,7 @@ export default function About() {
           <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">authentic social stream</span>
-              <h2 className="mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">real textures from the grounds.</h2>
+              <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>real textures from the grounds.</h2>
             </div>
             <p className={cx('max-w-md text-sm leading-7 tracking-wide', palette.muted)}>
               Venue imagery stays close, clear, and inspectable so the About page feels like a guided walk through the actual place.
@@ -452,7 +459,7 @@ export default function About() {
               <figure
                 key={image}
                 className={cx(
-                  'overflow-hidden border border-current/10 bg-current/[0.025]',
+                  'overflow-hidden border border-[#B2EBF2]/38 bg-[#E0F7FA]/[0.04]',
                   index % 2 === 0 ? 'rounded-[2.2rem_0.9rem_2.8rem_1.4rem]' : 'rounded-[0.9rem_2.2rem_1.4rem_2.8rem]',
                 )}
               >

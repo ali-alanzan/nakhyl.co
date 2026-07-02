@@ -61,6 +61,8 @@ const CONTACT_METHODS = [
 const SOCIAL_IMAGES = [entranceImage, loungeImage, cinemaImage, palmImage];
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
+const mistUnderline =
+  'relative inline-block after:absolute after:-bottom-2 after:left-0 after:h-px after:w-24 after:bg-[#B2EBF2]/70 after:shadow-[0_0_18px_rgba(178,235,242,0.42)] after:content-[""]';
 
 export default function Connect() {
   const [isNight, setIsNight] = useState(false);
@@ -98,16 +100,20 @@ export default function Connect() {
   const palette = useMemo(
     () => ({
       page: isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]',
-      panel: isNight ? 'border-[#F4EBE1]/12 bg-[#101922]/88' : 'border-[#2D4A3E]/14 bg-white/50',
-      panelSolid: isNight ? 'border-[#F4EBE1]/12 bg-[#111B24]' : 'border-[#2D4A3E]/14 bg-[#EEE3D7]',
-      inset: isNight ? 'border-[#F4EBE1]/10 bg-[#F4EBE1]/[0.035]' : 'border-[#2D4A3E]/10 bg-[#2D4A3E]/[0.035]',
+      panel: isNight
+        ? 'border-[#B2EBF2]/18 bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),rgba(16,25,34,0.9)_42%)]'
+        : 'border-[#B2EBF2]/42 bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.18),rgba(255,255,255,0.52)_42%)]',
+      panelSolid: isNight
+        ? 'border-[#B2EBF2]/16 bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),#111B24_42%)]'
+        : 'border-[#B2EBF2]/36 bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.18),rgba(238,227,215,0.96)_42%)]',
+      inset: isNight ? 'border-[#B2EBF2]/16 bg-[#E0F7FA]/[0.04]' : 'border-[#B2EBF2]/34 bg-[#E0F7FA]/[0.08]',
       muted: isNight ? 'text-[#F4EBE1]/68' : 'text-[#2D4A3E]/68',
-      hairline: isNight ? 'border-[#F4EBE1]/12' : 'border-[#2D4A3E]/12',
+      hairline: isNight ? 'border-[#B2EBF2]/16' : 'border-[#B2EBF2]/42',
       heroOverlay: isNight
         ? 'bg-[linear-gradient(90deg,rgba(10,17,24,0.96)_0%,rgba(10,17,24,0.78)_48%,rgba(10,17,24,0.18)_100%)]'
         : 'bg-[linear-gradient(90deg,rgba(244,235,225,0.98)_0%,rgba(244,235,225,0.78)_48%,rgba(244,235,225,0.14)_100%)]',
       input:
-        'border-current/15 bg-transparent placeholder:text-current/35 focus:border-[#D97706] focus:outline-none focus:ring-2 focus:ring-[#D97706]/20',
+        'border-[#B2EBF2]/34 bg-[#E0F7FA]/[0.04] placeholder:text-current/35 focus:border-[#B2EBF2] focus:outline-none focus:ring-2 focus:ring-[#B2EBF2]/25',
     }),
     [isNight],
   );
@@ -158,7 +164,7 @@ export default function Connect() {
         .font-serif { font-family: 'Cormorant Garamond', Georgia, serif; }
       `}</style>
 
-      <section className="relative border-b border-current/10">
+      <section className="relative border-b border-[#B2EBF2]/35">
         <img
           src={courtyardImage}
           alt="Nakhyl Zone courtyard with palms and shaded seating in Dahab"
@@ -166,10 +172,11 @@ export default function Connect() {
           loading="eager"
         />
         <div className={cx('absolute inset-0', palette.heroOverlay)} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_86%_16%,rgba(178,235,242,0.18),transparent_30%)]" />
         <div className="relative z-10 mx-auto grid min-h-[34rem] max-w-7xl grid-cols-1 gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.48fr)] lg:px-10 lg:py-20">
           <div className="flex max-w-3xl flex-col justify-center">
             <div className="mb-7 flex flex-wrap items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em]">
-              <span className="rounded-full border border-current/15 bg-current/[0.05] px-4 py-2 backdrop-blur-md">
+              <span className="rounded-full border border-[#B2EBF2]/35 bg-[#E0F7FA]/10 px-4 py-2 backdrop-blur-md">
                 connect with the oasis
               </span>
               <span className={cx('inline-flex items-center gap-2', palette.muted)}>
@@ -178,7 +185,7 @@ export default function Connect() {
               </span>
             </div>
 
-            <h1 className="font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal sm:text-6xl lg:text-7xl">
+            <h1 className="font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal [text-shadow:0_0_24px_rgba(178,235,242,0.16)] sm:text-6xl lg:text-7xl">
               plan the right kind of arrival.
             </h1>
             <p className={cx('mt-7 max-w-2xl text-base leading-8 tracking-wide sm:text-lg', palette.muted)}>
@@ -196,7 +203,7 @@ export default function Connect() {
               <button
                 type="button"
                 onClick={() => setIsCampfireOpen(true)}
-                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-current/15 bg-current/[0.05] px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-current/[0.1] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-[#B2EBF2]/40 bg-[#E0F7FA]/10 px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-[#E0F7FA]/16 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
               >
                 <Flame className="h-4 w-4 text-[#D97706]" aria-hidden="true" />
                 campfire story
@@ -232,10 +239,10 @@ export default function Connect() {
           onSubmit={handleSubmit}
           className={cx('rounded-[2.2rem_1rem_3.2rem_1.4rem] border p-5 shadow-xl backdrop-blur-xl sm:p-7 lg:p-9', palette.panel)}
         >
-          <div className="flex flex-col gap-4 border-b border-current/10 pb-6 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex flex-col gap-4 border-b border-[#B2EBF2]/22 pb-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D97706]">request desk</p>
-              <h2 className="mt-3 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl">tell us what you need.</h2>
+              <h2 className={cx('mt-3 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>tell us what you need.</h2>
             </div>
             <button
               type="button"
@@ -262,7 +269,7 @@ export default function Connect() {
                     aria-pressed={isActive}
                     className={cx(
                       'group min-h-28 rounded-[1.25rem_0.65rem_1.6rem_0.8rem] border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-[#D97706]',
-                      isActive ? 'border-[#D97706] bg-[#D97706] text-[#0A1118] shadow-[0_16px_36px_rgba(217,119,6,0.24)]' : cx('hover:border-[#D97706]/70 hover:bg-current/[0.06]', palette.inset),
+                      isActive ? 'border-[#D97706] bg-[#D97706] text-[#0A1118] shadow-[0_16px_36px_rgba(217,119,6,0.24)]' : cx('hover:border-[#B2EBF2]/70 hover:bg-[#E0F7FA]/10', palette.inset),
                     )}
                   >
                     <span className="flex items-start justify-between gap-3">
@@ -322,7 +329,7 @@ export default function Connect() {
                       onClick={() => setFormData((current) => ({ ...current, contactMethod: method.id }))}
                       className={cx(
                         'inline-flex h-12 items-center justify-center gap-2 rounded-[0.9rem_0.5rem_1.1rem_0.6rem] border text-xs font-bold uppercase tracking-widest transition focus:outline-none focus:ring-2 focus:ring-[#D97706]',
-                        isActive ? 'border-[#D97706] bg-[#D97706] text-[#0A1118]' : cx('hover:border-[#D97706]/70', palette.inset),
+                        isActive ? 'border-[#D97706] bg-[#D97706] text-[#0A1118]' : cx('hover:border-[#B2EBF2]/70', palette.inset),
                       )}
                     >
                       <Icon className="h-4 w-4" aria-hidden="true" />
@@ -397,7 +404,7 @@ export default function Connect() {
             />
           </label>
 
-          <div className="mt-7 flex flex-col gap-4 border-t border-current/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-7 flex flex-col gap-4 border-t border-[#B2EBF2]/22 pt-6 sm:flex-row sm:items-center sm:justify-between">
             <p className={cx('max-w-md text-sm leading-6', palette.muted)}>
               Your request opens a prepared WhatsApp message so the local crew can confirm availability with the fastest response path.
             </p>
@@ -416,7 +423,7 @@ export default function Connect() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">location</p>
-                <h3 className="mt-3 font-serif text-3xl font-light lowercase leading-tight">tucked inside dahab.</h3>
+                <h3 className={cx('mt-3 font-serif text-3xl font-light lowercase leading-tight', mistUnderline)}>tucked inside dahab.</h3>
               </div>
               <MapPin className="mt-1 h-5 w-5 text-[#D97706]" aria-hidden="true" />
             </div>
@@ -442,7 +449,7 @@ export default function Connect() {
                   key={image}
                   src={image}
                   alt={`Nakhyl Zone venue detail ${index + 1}`}
-                  className="aspect-square rounded-[1rem_0.55rem_1.35rem_0.75rem] object-cover"
+                  className="aspect-square rounded-[1rem_0.55rem_1.35rem_0.75rem] border border-[#B2EBF2]/30 object-cover"
                   loading="lazy"
                 />
               ))}
