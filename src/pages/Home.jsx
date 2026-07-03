@@ -1,80 +1,102 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
-  CalendarDays,
+  Coffee,
   Flame,
-  Headphones,
-  MapPin,
   Moon,
+  Music,
   Pause,
   Play,
   ShieldCheck,
-  Sparkles,
   Sun,
   Users,
-  Wifi,
+  Waves,
   X,
 } from 'lucide-react';
 
-const heroImage = new URL('../../identity/Nakhyl-zone-2.jpeg', import.meta.url).href;
+const dayHeroImage = new URL('../../identity/Nakhyl-zone-2.jpeg', import.meta.url).href;
+const nightHeroImage = '/images/night/nakhyl-night-04.jpeg';
 const groveImage = new URL('../../identity/Nakhyl-zone-9.jpeg', import.meta.url).href;
 const loungeImage = new URL('../../identity/Nakhyl-zone-1.jpeg', import.meta.url).href;
-const fireImage = new URL('../../identity/Nakhyl-zone-5.jpeg', import.meta.url).href;
 const seaImage = new URL('../../identity/Nakhyl-zone-16.jpeg', import.meta.url).href;
 const entranceImage = new URL('../../identity/Nakhyl-zone-12.jpeg', import.meta.url).href;
 const brandBoardImage = new URL('../../identity/Nakhyl-zone-20.jpeg', import.meta.url).href;
 
-const SOCIAL_IMAGES = [
+const NIGHT_IMAGES = [
+  '/images/night/nakhyl-night-01.jpeg',
+  '/images/night/nakhyl-night-02.jpeg',
+  '/images/night/nakhyl-night-03.jpeg',
+  '/images/night/nakhyl-night-04.jpeg',
+  '/images/night/nakhyl-night-05.jpeg',
+  '/images/night/nakhyl-night-06.jpeg',
+  '/images/night/nakhyl-night-07.jpeg',
+  '/images/night/nakhyl-night-08.jpeg',
+  '/images/night/nakhyl-night-09.jpeg',
+  '/images/night/nakhyl-night-10.jpeg',
+  '/images/night/nakhyl-night-11.jpeg',
+  '/images/night/nakhyl-night-12.jpeg',
+  '/images/night/nakhyl-night-13.jpeg',
+  '/images/night/nakhyl-night-14.jpeg',
+];
+
+const DAY_IMAGES = [
   new URL('../../identity/Nakhyl-zone-3.jpeg', import.meta.url).href,
   new URL('../../identity/Nakhyl-zone-4.jpeg', import.meta.url).href,
   new URL('../../identity/Nakhyl-zone-7.jpeg', import.meta.url).href,
-  new URL('../../identity/Nakhyl-zone-10.jpeg', import.meta.url).href,
+  new URL('../../identity/Nakhyl-zone-11.jpeg', import.meta.url).href,
 ];
 
 const EXPERIENCE_CARDS = [
   {
-    title: 'palm-grove work sessions',
-    kicker: 'day rhythm',
-    body: 'Quiet shaded tables, power-ready corners, low seating, and enough room to move from focused work into slow conversation.',
+    title: 'sea calm by day',
+    kicker: 'morning to sunset',
+    body: 'Coffee, shaded tables, slow food, palm wind, and the Red Sea rhythm close enough to shape the whole mood.',
     image: groveImage,
   },
   {
-    title: 'floor-level hospitality',
-    kicker: 'bedouin ritual',
-    body: 'Handwoven rugs, generous cushions, ember-brewed Habak tea, and a hosting style that feels personal rather than transactional.',
-    image: loungeImage,
+    title: 'desert lights by night',
+    kicker: 'after sunset',
+    body: 'Warm bulbs, stone paths, low seating, quiet glow, and a garden that turns dinner into a small open-air ritual.',
+    image: NIGHT_IMAGES[7],
   },
   {
-    title: 'campfire acoustic circles',
-    kicker: 'night rhythm',
-    body: 'Unamplified music, candle-level light, and intimate gathering formats that keep the courtyard calm after sunset.',
-    image: fireImage,
+    title: 'one table for everyone',
+    kicker: 'dahab community',
+    body: 'Divers, riders, travelers, artists, families, sport people, and friends passing through the same easy courtyard.',
+    image: loungeImage,
   },
 ];
 
 const JOURNEY = [
   {
-    icon: MapPin,
-    title: 'arrive from the city grid',
-    text: 'A visible, easy-to-reach entrance that quickly shifts guests away from Dahab street noise.',
+    icon: Waves,
+    title: 'sea soul',
+    text: 'The Red Sea brings the calm: diving days, salt air, wind, waves, and people who arrive already half in love with Dahab.',
+  },
+  {
+    icon: Flame,
+    title: 'desert soul',
+    text: 'The sand brings the warmth: amber light, palms, stone, stars, music, and open-air nights under the Sinai sky.',
   },
   {
     icon: ShieldCheck,
-    title: 'choose the right pocket',
-    text: 'Work tables, low seating, cinema corners, and fire circles are separated so each visit has a natural flow.',
-  },
-  {
-    icon: CalendarDays,
-    title: 'reserve the next ritual',
-    text: 'Guests can move from discovery into a WhatsApp handoff for cinema nights, acoustic sessions, or private gatherings.',
+    title: 'young safe energy',
+    text: 'A strong social place shaped by active young people, divers, riders, hosts, musicians, and guests who look after the vibe.',
   },
 ];
 
 const RITUALS = [
-  ['mon / wed', 'Cinema Wadi', 'Independent films projected in the courtyard with reserved cushions and a soft arrival window.'],
-  ['daily', 'quiet work hours', 'Palm shade, cold drinks, stable tables, and a low-stimulation layout for nomads and makers.'],
-  ['thu', 'acoustic fire circle', 'Oud lines, hand percussion, shared tea, and no raised stage between guests and musicians.'],
-  ['sunrise', 'Habak tea reset', 'A grounded morning service built around mountain herbs, open air, and a slower first hour.'],
+  ['breakfast', 'coffee before the water', 'Easy morning plates, shaded work pockets, and a soft start before diving, riding, or walking Dahab.'],
+  ['sunset', 'food while the sky changes', 'Shared tables, warm service, and that blue-to-amber hour where sea calm becomes desert glow.'],
+  ['night', 'music under the palms', 'Techno, beatbox, acoustic moments, and small parties that feel alive without losing the garden soul.'],
+  ['anytime', 'a table for the whole city', 'Solo travelers, couples, families, athletes, divers, and local friends can all find their corner.'],
+];
+
+const NIGHT_GARDEN = [
+  ['when the sun goes down', 'the palms light up', NIGHT_IMAGES[3]],
+  ['a garden between', 'sea wind and desert stars', NIGHT_IMAGES[6]],
+  ['coffee in the morning', 'music after dark', NIGHT_IMAGES[10]],
+  ['warm lights', 'open air, good food, dahab sound', NIGHT_IMAGES[1]],
 ];
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
@@ -108,15 +130,15 @@ export default function Home() {
     () => ({
       page: isNight ? 'bg-[#0A1118] text-[#F4EBE1]' : 'bg-[#F4EBE1] text-[#2D4A3E]',
       panel: isNight
-        ? 'bg-[#111B24]/88 border-[#B2EBF2]/18 shadow-[inset_0_1px_0_rgba(224,247,250,0.08)]'
+        ? 'bg-[#111B24]/88 border-[#F8B451]/22 shadow-[inset_0_1px_0_rgba(248,180,81,0.08),0_24px_90px_rgba(0,0,0,0.24)]'
         : 'bg-[radial-gradient(circle_at_82%_0%,rgba(224,247,250,0.22),rgba(255,255,255,0.46)_38%,rgba(255,255,255,0.34)_100%)] border-[#B2EBF2]/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]',
       panelSolid: isNight
-        ? 'bg-[radial-gradient(circle_at_86%_0%,rgba(178,235,242,0.08),rgba(16,25,34,1)_42%)] border-[#B2EBF2]/16'
+        ? 'bg-[radial-gradient(circle_at_86%_0%,rgba(217,119,6,0.10),rgba(16,25,34,1)_42%)] border-[#D97706]/24'
         : 'bg-[radial-gradient(circle_at_86%_0%,rgba(224,247,250,0.20),rgba(238,227,215,0.96)_40%)] border-[#B2EBF2]/38',
-      muted: isNight ? 'text-[#F4EBE1]/70' : 'text-[#2D4A3E]/70',
-      hairline: isNight ? 'border-[#B2EBF2]/16' : 'border-[#B2EBF2]/45',
+      muted: isNight ? 'text-[#F4EBE1]/72' : 'text-[#2D4A3E]/70',
+      hairline: isNight ? 'border-[#D97706]/20' : 'border-[#B2EBF2]/45',
       heroOverlay: isNight
-        ? 'bg-[linear-gradient(90deg,rgba(10,17,24,0.96)_0%,rgba(10,17,24,0.76)_46%,rgba(10,17,24,0.18)_100%)]'
+        ? 'bg-[linear-gradient(90deg,rgba(10,17,24,0.96)_0%,rgba(10,17,24,0.70)_46%,rgba(10,17,24,0.26)_100%)]'
         : 'bg-[linear-gradient(90deg,rgba(244,235,225,0.98)_0%,rgba(244,235,225,0.78)_47%,rgba(244,235,225,0.12)_100%)]',
     }),
     [isNight],
@@ -126,8 +148,8 @@ export default function Home() {
     const message = encodeURIComponent(
       [
         'Marhaba Nakhyl Zone.',
-        'I would like to plan a visit to the cultural oasis.',
-        'Please share availability for work sessions, Cinema Wadi, or the acoustic fire circle.',
+        'I would like to plan a visit.',
+        'Please share availability for food, coffee, music nights, events, or a table under the palms.',
       ].join('\n'),
     );
 
@@ -138,13 +160,13 @@ export default function Home() {
     <main className={cx('min-h-screen overflow-hidden font-sans antialiased transition-colors duration-700', palette.page)}>
       <section className="relative min-h-[calc(100vh-6rem)] overflow-hidden border-b border-current/10">
         <img
-          src={heroImage}
-          alt="Nakhyl Zone palm courtyard with shaded seating in Dahab"
-          className="absolute inset-0 h-full w-full object-cover"
+          src={isNight ? nightHeroImage : dayHeroImage}
+          alt="Nakhyl Dahab courtyard between sea calm and desert night lights"
+          className="absolute inset-0 h-full w-full object-cover transition duration-700"
           loading="eager"
         />
         <div className={cx('absolute inset-0', palette.heroOverlay)} />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(217,119,6,0.18),transparent_32%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(217,119,6,0.26),transparent_32%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_14%,rgba(178,235,242,0.20),transparent_30%)]" />
 
         <div className="relative z-10 mx-auto grid min-h-[calc(100vh-6rem)] max-w-7xl grid-cols-1 gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.55fr)] lg:px-10">
@@ -154,16 +176,16 @@ export default function Home() {
                 Dahab cultural oasis
               </span>
               <span className={cx('inline-flex items-center gap-2', palette.muted)}>
-                <span className="h-1.5 w-1.5 rounded-full bg-[#D97706]" />
-                captured from real venue imagery
+                <span className="h-1.5 w-1.5 rounded-full bg-[#D97706] shadow-[0_0_18px_rgba(217,119,6,0.7)]" />
+                sea by day, lights by night
               </span>
             </div>
 
-            <h1 className="max-w-3xl font-serif text-5xl font-light lowercase leading-[1.04] tracking-normal [text-shadow:0_0_24px_rgba(178,235,242,0.16)] sm:text-6xl lg:text-7xl">
-              a quiet palm sanctuary tucked inside dahab.
+            <h1 className="max-w-3xl font-serif text-5xl font-light leading-[1.04] tracking-normal [text-shadow:0_0_24px_rgba(178,235,242,0.16)] sm:text-6xl lg:text-7xl">
+              Nakhyl Dahab
             </h1>
             <p className={cx('mt-7 max-w-2xl text-base leading-8 tracking-wide sm:text-lg', palette.muted)}>
-              Nakhyl Zone blends Sinai hospitality, low floor seating, acoustic nights, open-air cinema, and nomad-ready work pockets into one grounded courtyard experience.
+              Sea calm by day. Desert lights by night. Food, music, waves, and people gathered under the palms.
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
@@ -176,10 +198,16 @@ export default function Home() {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </button>
               <a
-                href="#experience"
+                href="/gathering"
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[1rem_1.8rem_1.3rem_0.9rem] border border-[#D97706]/40 bg-[#D97706]/10 px-6 text-xs font-bold uppercase tracking-widest text-[#D97706] backdrop-blur-md transition hover:bg-[#D97706] hover:text-[#0A1118] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+              >
+                events and nights
+              </a>
+              <a
+                href="#night-garden"
                 className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[0.8rem_1.4rem_1rem_1.8rem] border border-[#B2EBF2]/40 bg-[#E0F7FA]/10 px-6 text-xs font-bold uppercase tracking-widest backdrop-blur-md transition hover:bg-[#E0F7FA]/16 focus:outline-none focus:ring-2 focus:ring-[#D97706]"
               >
-                explore the courtyard
+                see the night garden
               </a>
             </div>
           </div>
@@ -188,16 +216,16 @@ export default function Home() {
             <div className={cx('w-full rounded-[2.6rem_1.2rem_3.4rem_1.6rem] border p-4 shadow-2xl backdrop-blur-xl', palette.panel)}>
               <div className="overflow-hidden rounded-[2rem_0.9rem_2.8rem_1.2rem]">
                 <img
-                  src={entranceImage}
-                  alt="Nakhyl Zone entrance with warm stone and yellow-framed windows"
-                  className="h-72 w-full object-cover sm:h-96 lg:h-[28rem]"
+                  src={isNight ? NIGHT_IMAGES[12] : entranceImage}
+                  alt="Nakhyl Zone entrance and courtyard glow"
+                  className="h-72 w-full object-cover transition duration-700 sm:h-96 lg:h-[28rem]"
                 />
               </div>
               <div className="grid grid-cols-3 gap-3 pt-4">
                 {[
-                  ['28.5109 N', 'maps point'],
+                  ['Red Sea', 'sea soul'],
                   [dahabTime || '00:00', 'dahab time'],
-                  ['Mar 2026', 'visual set'],
+                  ['amber', 'night lights'],
                 ].map(([value, label]) => (
                   <div key={label} className="rounded-[1rem_0.6rem_1.2rem_0.7rem] border border-[#B2EBF2]/30 bg-[#E0F7FA]/[0.06] p-3">
                     <div className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#D97706]">{value}</div>
@@ -224,7 +252,7 @@ export default function Home() {
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.24em]">listen to the oasis right now</p>
               <p className={cx('mt-1 text-sm leading-6', palette.muted)}>
-                A tactile preview module for palm wind, embers, and faint acoustic strings.
+                Wind through palms, distant waves, soft bass, and friends gathering after sunset.
               </p>
             </div>
           </div>
@@ -248,13 +276,13 @@ export default function Home() {
       <section id="experience" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
-            <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">first-shot impact</span>
-            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>
-              every scroll reveals another hidden courtyard.
+            <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">day to night</span>
+            <h2 className={cx('mt-4 font-serif text-4xl font-light leading-tight sm:text-5xl', mistUnderline)}>
+              the same relaxed soul, richer after dark.
             </h2>
           </div>
           <p className={cx('max-w-2xl text-sm leading-7 tracking-wide lg:justify-self-end', palette.muted)}>
-            The home page now uses the brand guide's raw contour principle: asymmetric frames, warm sand and palm contrast, amber action points, and real Google Maps venue captures instead of generic placeholders.
+            Nakhyl stays warm and human across the full day: coffee and sea air in the morning, sunset food, then palms, music, string lights, and desert sky at night.
           </p>
         </div>
 
@@ -273,14 +301,14 @@ export default function Home() {
               <div className="h-64 overflow-hidden">
                 <img
                   src={card.image}
-                  alt={`${card.title} at Nakhyl Zone`}
+                  alt={`${card.title} at Nakhyl Dahab`}
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
               </div>
               <div className="p-6">
                 <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#D97706]">{card.kicker}</span>
-                <h3 className="mt-3 font-serif text-3xl font-light lowercase leading-tight">{card.title}</h3>
+                <h3 className="mt-3 font-serif text-3xl font-light leading-tight">{card.title}</h3>
                 <p className={cx('mt-4 text-sm leading-7', palette.muted)}>{card.body}</p>
               </div>
             </article>
@@ -288,38 +316,46 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={cx('border-y px-5 py-20 sm:px-8 lg:px-10', palette.hairline)}>
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div className="relative overflow-hidden rounded-[1.4rem_3.2rem_2.6rem_1.2rem] border border-[#B2EBF2]/45">
-            <img src={seaImage} alt="Dahab coastline near Nakhyl Zone" className="h-[32rem] w-full object-cover" loading="lazy" />
-            <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(10,17,24,0.72),rgba(10,17,24,0.06))]" />
-            <div className="absolute bottom-5 left-5 right-5 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] border border-[#B2EBF2]/35 bg-[#0A1118]/45 p-5 text-[#F4EBE1] backdrop-blur-md">
-              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">accessible sanctuary</p>
-              <p className="mt-2 font-serif text-2xl lowercase">steps from the water, emotionally far from the noise.</p>
+      <section id="night-garden" className={cx('border-y px-5 py-20 sm:px-8 lg:px-10', palette.hairline)}>
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">night at nakhyl</span>
+              <h2 className={cx('mt-4 font-serif text-4xl font-light leading-tight sm:text-5xl', mistUnderline)}>
+                when the palms light up, dahab stays.
+              </h2>
             </div>
+            <button
+              type="button"
+              onClick={() => setIsNight((value) => !value)}
+              className="inline-flex min-h-12 items-center justify-center gap-3 rounded-[1rem_1.8rem_1.3rem_0.9rem] border border-[#D97706]/40 bg-[#D97706]/10 px-5 text-xs font-bold uppercase tracking-widest text-[#D97706] transition hover:bg-[#D97706] hover:text-[#0A1118] focus:outline-none focus:ring-2 focus:ring-[#D97706]"
+            >
+              {isNight ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
+              {isNight ? 'chase the sun' : 'follow the sparks'}
+            </button>
           </div>
 
-          <div>
-            <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">optimized guest flow</span>
-            <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase leading-tight sm:text-5xl', mistUnderline)}>
-              from map discovery to confirmed visit in three clear moves.
-            </h2>
-            <div className="mt-8 space-y-4">
-              {JOURNEY.map((step) => {
-                const Icon = step.icon;
-                return (
-                  <div key={step.title} className={cx('flex gap-4 rounded-[1.8rem_0.9rem_2.2rem_1.1rem] border p-5', palette.panelSolid)}>
-                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#D97706]/15 text-[#D97706]">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </span>
-                    <div>
-                      <h3 className="font-serif text-xl lowercase">{step.title}</h3>
-                      <p className={cx('mt-1 text-sm leading-6', palette.muted)}>{step.text}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="grid gap-4 md:grid-cols-4">
+            {NIGHT_GARDEN.map(([kicker, title, image], index) => (
+              <article
+                key={title}
+                className={cx(
+                  'group relative min-h-[24rem] overflow-hidden border border-[#D97706]/24 bg-[#0A1118] text-[#F4EBE1] shadow-[0_24px_70px_rgba(0,0,0,0.22)]',
+                  index === 0 && 'rounded-[2.8rem_1rem_1.8rem_1.2rem] md:col-span-2',
+                  index === 1 && 'rounded-[1rem_2.8rem_1.2rem_1.8rem]',
+                  index === 2 && 'rounded-[1.6rem_1rem_2.8rem_1.2rem]',
+                  index === 3 && 'rounded-[1rem_1.8rem_1.2rem_2.8rem] md:col-span-2',
+                )}
+              >
+                <img src={image} alt={`${title} at Nakhyl night garden`} className="absolute inset-0 h-full w-full object-cover opacity-76 transition duration-700 group-hover:scale-105" loading="lazy" />
+                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(10,17,24,0.86),rgba(10,17,24,0.10)_58%,rgba(217,119,6,0.16))]" />
+                <div className="absolute left-5 right-5 top-5 h-px bg-[#F8B451]/70 shadow-[0_0_28px_rgba(248,180,81,0.8)]" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#F8B451]">{kicker}</span>
+                  <h3 className="mt-3 max-w-xs font-serif text-3xl font-light leading-tight">{title}</h3>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -329,8 +365,8 @@ export default function Home() {
           <div className={cx('rounded-[2.6rem_1.4rem_3.4rem_1.7rem] border p-6 sm:p-8 lg:col-span-5', palette.panelSolid)}>
             <div className="flex items-center justify-between gap-4">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">ambient state</span>
-                <h2 className={cx('mt-3 font-serif text-3xl font-light lowercase', mistUnderline)}>chase sun or follow sparks.</h2>
+                <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">dahab energy</span>
+                <h2 className={cx('mt-3 font-serif text-3xl font-light', mistUnderline)}>sea people, desert nights.</h2>
               </div>
               <button
                 type="button"
@@ -342,14 +378,14 @@ export default function Home() {
               </button>
             </div>
             <p className={cx('mt-5 text-sm leading-7', palette.muted)}>
-              The interface changes the same way the venue does: sand and palm for bright work sessions, deep indigo and amber for the fire-lit evening program.
+              A safe, alive place for the young Dahab pulse: divers coming back from the reef, riders and athletes cooling down, travelers meeting locals, families eating under warm lights, and music people keeping the night open.
             </p>
             <div className="mt-7 grid grid-cols-2 gap-3">
               {[
-                [Wifi, 'nomad ready', 'quiet work pockets'],
-                [Users, 'community', 'hosted circles'],
-                [Headphones, 'low noise', 'acoustic-first nights'],
-                [Sparkles, 'premium raw', 'organic visual system'],
+                [Waves, 'diving city', 'red sea days'],
+                [Users, 'community', 'young safe energy'],
+                [Music, 'music nights', 'techno and beatbox'],
+                [Coffee, 'all day', 'coffee, food, dinner'],
               ].map(([Icon, label, text]) => (
                 <div key={label} className="rounded-[1.2rem_0.7rem_1.4rem_0.9rem] border border-[#B2EBF2]/28 bg-[#E0F7FA]/[0.05] p-4">
                   <Icon className="h-5 w-5 text-[#D97706]" aria-hidden="true" />
@@ -364,7 +400,7 @@ export default function Home() {
             {RITUALS.map(([tag, title, text]) => (
               <article key={title} className={cx('rounded-[1.8rem_0.9rem_2.4rem_1.2rem] border p-6', palette.panel)}>
                 <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">{tag}</span>
-                <h3 className={cx('mt-4 font-serif text-2xl font-light lowercase', mistUnderline)}>{title}</h3>
+                <h3 className={cx('mt-4 font-serif text-2xl font-light', mistUnderline)}>{title}</h3>
                 <p className={cx('mt-3 text-sm leading-7', palette.muted)}>{text}</p>
               </article>
             ))}
@@ -373,11 +409,49 @@ export default function Home() {
       </section>
 
       <section className={cx('border-y px-5 py-20 sm:px-8 lg:px-10', palette.hairline)}>
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div className="relative overflow-hidden rounded-[1.4rem_3.2rem_2.6rem_1.2rem] border border-[#B2EBF2]/45">
+            <img src={seaImage} alt="Dahab coastline near Nakhyl Zone" className="h-[32rem] w-full object-cover" loading="lazy" />
+            <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(10,17,24,0.72),rgba(10,17,24,0.06))]" />
+            <div className="absolute bottom-5 left-5 right-5 rounded-[1.2rem_0.7rem_1.6rem_0.9rem] border border-[#B2EBF2]/35 bg-[#0A1118]/45 p-5 text-[#F4EBE1] backdrop-blur-md">
+              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">sea soul</p>
+              <p className="mt-2 font-serif text-2xl">The Red Sea brings us here. The night makes us stay.</p>
+            </div>
+          </div>
+
+          <div>
+            <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">sea, desert, people</span>
+            <h2 className={cx('mt-4 font-serif text-4xl font-light leading-tight sm:text-5xl', mistUnderline)}>
+              a meeting point for every kind of dahab day.
+            </h2>
+            <div className="mt-8 space-y-4">
+              {JOURNEY.map((step) => {
+                const Icon = step.icon;
+                return (
+                  <div key={step.title} className={cx('flex gap-4 rounded-[1.8rem_0.9rem_2.2rem_1.1rem] border p-5', palette.panelSolid)}>
+                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#D97706]/15 text-[#D97706]">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div>
+                      <h3 className="font-serif text-xl">{step.title}</h3>
+                      <p className={cx('mt-1 text-sm leading-6', palette.muted)}>{step.text}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={cx('px-5 py-20 sm:px-8 lg:px-10', palette.page)}>
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">authentic social stream</span>
-              <h2 className={cx('mt-4 font-serif text-4xl font-light lowercase', mistUnderline)}>real textures, real courtyard proof.</h2>
+              <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#D97706]">real textures</span>
+              <h2 className={cx('mt-4 font-serif text-4xl font-light leading-tight sm:text-5xl', mistUnderline)}>
+                food, coffee, music, sea.
+              </h2>
             </div>
             <button
               type="button"
@@ -390,15 +464,15 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {SOCIAL_IMAGES.map((image, index) => (
+            {[...DAY_IMAGES, ...NIGHT_IMAGES].map((image, index) => (
               <div
-                key={image}
+                key={`${image}-${index}`}
                 className={cx(
                   'overflow-hidden border border-[#B2EBF2]/40 bg-[#E0F7FA]/[0.04]',
                   index % 2 === 0 ? 'rounded-[2.2rem_0.9rem_2.8rem_1.4rem]' : 'rounded-[0.9rem_2.2rem_1.4rem_2.8rem]',
                 )}
               >
-                <img src={image} alt="Nakhyl Zone courtyard social proof" className="h-72 w-full object-cover" loading="lazy" />
+                <img src={image} alt="Nakhyl Dahab day and night courtyard life" className="h-72 w-full object-cover" loading="lazy" />
               </div>
             ))}
           </div>
@@ -406,10 +480,18 @@ export default function Home() {
           <div className={cx('mt-6 grid gap-4 rounded-[2.4rem_1rem_3rem_1.4rem] border p-5 sm:grid-cols-[0.8fr_1.2fr]', palette.panelSolid)}>
             <img src={brandBoardImage} alt="Nakhyl Zone brand board and design references" className="h-52 w-full rounded-[1.6rem_0.8rem_2rem_1rem] object-cover" loading="lazy" />
             <div className="flex flex-col justify-center">
-              <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">brand system applied</span>
-              <p className="mt-3 font-serif text-2xl font-light lowercase leading-snug">
-                sand, palm, indigo, and amber now drive every visual decision instead of living only in documentation.
+              <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">all-day appeal</span>
+              <p className="mt-3 font-serif text-2xl font-light leading-snug">
+                Breakfast, lunch, dinner, sunset drinks, night food, music nights, groups, solo travelers, divers, athletes, couples, and families all have a reason to come.
               </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <a href="/menu" className="inline-flex min-h-11 items-center justify-center rounded-[1.2rem_0.7rem_1.4rem_0.9rem] bg-[#D97706] px-5 text-xs font-bold uppercase tracking-widest text-[#0A1118]">
+                  view menu
+                </a>
+                <a href="/connect" className="inline-flex min-h-11 items-center justify-center rounded-[0.7rem_1.2rem_0.9rem_1.4rem] border border-current/20 px-5 text-xs font-bold uppercase tracking-widest">
+                  find us
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -432,16 +514,16 @@ export default function Home() {
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
             <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D97706]">virtual campfire</span>
-            <h2 id="campfire-title" className="mt-4 max-w-lg font-serif text-4xl font-light lowercase leading-tight">
+            <h2 id="campfire-title" className="mt-4 max-w-lg font-serif text-4xl font-light leading-tight">
               the hospitality ritual at the center of the courtyard.
             </h2>
             <p className="mt-5 text-sm leading-7 text-[#2D4A3E]/75">
-              At Nakhyl Zone, the flame is the arrival point: tea is brewed slowly, guests settle at floor level, and music stays human-scale. The digital experience now mirrors that rhythm with warmer interactions, clearer booking intent, and quieter navigation.
+              At Nakhyl, the night is warm rather than loud: tea, food, soft lamps, friends, music, and the feeling that sea people and desert people have found the same table.
             </p>
             <div className="mt-6 rounded-[1.6rem_0.8rem_2rem_1rem] border border-[#2D4A3E]/15 bg-[#2D4A3E]/5 p-5">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D97706]">guest promise</p>
               <p className="mt-2 text-sm leading-7 text-[#2D4A3E]/75">
-                No loud beachfront clutter. No remote-camp friction. Just an accessible city sanctuary built from palm shade, acoustic rituals, and attentive local hosting.
+                A safe, young, open-air Dahab place for breakfast, dinner, music nights, diving stories, sport friends, family visits, and slow conversations under the palms.
               </p>
             </div>
           </div>

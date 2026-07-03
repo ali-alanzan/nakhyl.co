@@ -1,11 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./resources/**/*.blade.php",
-    "./resources/**/*.js",
-    "./resources/**/*.jsx", // 👈 CRITICAL: Tailwind must scan your React files
-    "./resources/**/*.ts",
-    "./resources/**/*.tsx",
+    "./index.html",
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./resources/**/*.{blade.php,js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
